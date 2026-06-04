@@ -117,7 +117,6 @@ bash reproduce/reproduce_fig6.sh --skip-regen             # use cached distances
 bash reproduce/reproduce_fig6.sh --no-verify              # regenerate, skip verify gate
 ```
 
-See [`docs/data_provenance/fig6/PROVENANCE.md`](docs/data_provenance/fig6/PROVENANCE.md) for per-study DOIs, conversion-chain details, and manual-step recipes.
 
 ---
 
