@@ -1,6 +1,6 @@
 <div align="center">
 <h1>
-CaliPPer: Calibration and Prediction of Performance <br />
+CaliPPer (Calibration and Prediction of Performance): <br />
 <small>Quantifying, predicting and improving AI model performance for binding prediction</small>
 </h1>
 
