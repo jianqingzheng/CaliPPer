@@ -218,9 +218,3 @@ Any publication using this source code or the released model weights should cite
 }
 ```
 
----
-
-## Documentation
-
-- [`docs/data_provenance/fig6/PROVENANCE.md`](docs/data_provenance/fig6/PROVENANCE.md) — Fig 6 retrospective studies provenance + 2-command flow
-- [`CHANGELOG.md`](CHANGELOG.md) — version history
