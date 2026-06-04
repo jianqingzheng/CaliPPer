@@ -5,7 +5,7 @@ CaliPPer: Calibration and Prediction of Performance <br />
 </h1>
 
 [![DOI](https://img.shields.io/badge/DOI-pending-darkyellow)](#)
-[![Nature Methods](https://img.shields.io/badge/Nature%20Methods-submitted-b31b1b.svg)](#)
+[![arXiv](https://img.shields.io/badge/Nature%20Methods-submitted-b31b1b.svg)](#)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
 </div>
