@@ -1,0 +1,43 @@
+# Conda environment for CaliPPer reproducibility
+# Stub — will be pinned in P10 (clean-env smoke test)
+#
+# Usage:
+#   conda env create -f environment.yml
+#   conda activate calipper
+#   pip install -e .
+
+name: calipper
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python>=3.10,<3.13
+  - pip
+
+  # Core scientific stack
+  - numpy>=1.23
+  - pandas>=1.5
+  - scipy>=1.10
+  - scikit-learn>=1.2
+  - matplotlib>=3.6
+  - seaborn>=0.12
+
+  # I/O
+  - openpyxl>=3.1
+  - jupyter>=1.0
+  - ipykernel>=6.20
+
+  # Distance computation
+  - python-Levenshtein>=0.21
+
+  # Dev tools (optional but useful for contributors)
+  - pytest>=7.0
+  - pytest-cov>=4.0
+  - black>=23.0
+  - ruff>=0.1
+  - pre-commit>=3.0
+
+  # pip-only deps (none required at this stub stage; will populate during P2-P4)
+  - pip:
+    - nbstripout>=0.6

@@ -1,0 +1,21 @@
+# pip fallback (use environment.yml with conda for the recommended setup)
+# Stub — pin versions in P10 (clean-env smoke test)
+
+numpy>=1.23
+pandas>=1.5
+scipy>=1.10
+scikit-learn>=1.2
+matplotlib>=3.6
+seaborn>=0.12
+openpyxl>=3.1
+Levenshtein>=0.21
+jupyter>=1.0
+ipykernel>=6.20
+
+# Dev (optional)
+pytest>=7.0
+pytest-cov>=4.0
+black>=23.0
+ruff>=0.1
+pre-commit>=3.0
+nbstripout>=0.6
