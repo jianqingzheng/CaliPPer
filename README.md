@@ -1,7 +1,7 @@
 <div align="center">
 <h1>
 CaliPPer: Calibration and Prediction of Performance <br />
-<small>Sample-to-Domain Distance and Bayesian Recalibration for Binding-Prediction Models</small>
+<small>Quantifying, predicting and improving AI model performance for binding prediction</small>
 </h1>
 
 [![DOI](https://img.shields.io/badge/DOI-pending-darkyellow)](#)
@@ -10,7 +10,7 @@ CaliPPer: Calibration and Prediction of Performance <br />
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
 </div>
 
-Code for the Nature Methods submission **"CaliPPer: Sample-to-Domain Distance and Bayesian Recalibration for Binding-Prediction Models"**.
+Code for the paper **"Quantifying, predicting and improving AI model performance for binding prediction"**.
 
 > This repo provides an implementation of distance-aware Bayesian recalibration and performance prediction for BCR–antigen, TCR–epitope, MHC–peptide, and small-molecule binding-prediction models.
 
@@ -43,7 +43,7 @@ The method is post-hoc (no retraining), modular across base distance metrics (Le
 
 Clone code from GitHub:
 ```shell
-git clone <repo-url>
+git clone https://github.com/jianqingzheng/CaliPPer.git
 cd CaliPPer/
 ```
 
@@ -210,11 +210,11 @@ Any publication using this source code or the released model weights should cite
 
 ```bibtex
 @article{zheng2026calipper,
-  title={CaliPPer: Sample-to-Domain Distance and Bayesian Recalibration for Binding-Prediction Models},
+  title={Quantifying, predicting and improving AI model performance for binding prediction},
   author={Zheng, Jianqing and ...},
-  journal={Nature Methods},
+  journal={},
   year={2026},
-  doi={[manuscript DOI pending]}
+  doi={[]}
 }
 ```
 
