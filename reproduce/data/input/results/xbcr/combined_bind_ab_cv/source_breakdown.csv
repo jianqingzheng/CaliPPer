@@ -1,0 +1,3 @@
+data_source,n_samples,n_abs,n_vars,pos_rate
+flu,5162,840,41,0.629
+sars,12465,4481,37,0.408

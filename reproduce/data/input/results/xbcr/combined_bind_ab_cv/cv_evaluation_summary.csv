@@ -1,0 +1,7 @@
+fold,method,scope,metric,pearson_r,pearson_p,spearman_r,spearman_p
+4,topk,combined,aucroc,,,,
+4,topk,combined,ap,,,,
+4,topk,combined,acc,,,,
+4,topk,combined,f1,,,,
+4,topk,combined,prec,,,,
+4,topk,combined,recall,,,,

@@ -1,0 +1,240 @@
+# =============================================================================
+# CaliPPer .gitignore — exclusion rules per BUILD_PLAN.md §7 / INVENTORY.md §12
+# =============================================================================
+
+# Python bytecode / build artefacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Jupyter / IPython
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+.jupyter/
+profile_default/
+
+# IDE / OS metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ML experiment tracking
+wandb/
+mlruns/
+lightning_logs/
+tensorboard/
+runs/
+
+# Secrets and credentials
+.env
+.envrc
+*.token
+credentials*
+*.pem
+*.key
+*.crt
+secrets/
+
+# Build artefacts
+*.aux
+*.log
+*.out
+*.bbl
+*.fls
+*.fdb_latexmk
+*.blg
+*.synctex.gz
+*.toc
+
+# =============================================================================
+# Data + model files policy (revised 2026-06-06):
+# ─────────────────────────────────────────────────────────────────────────────
+# Repo ships SCRIPTS + Fig 6 verification reference + Fig 2-5 cached prediction
+# CSVs (~152 MB across 123 files) so reviewers can reproduce ALL figures in 2
+# commands without the Zenodo deposit. Raw author data (`reproduce/data/input/
+# Data/`) is fetched by `prepare_fig6_data.sh` from authors' DOIs at run time.
+# Model weights (`reproduce/data/input/Model/`) are fetched by `download_data.sh
+# --record 1` from CaliPPer's Zenodo (28 GB). Neither is tracked here.
+# =============================================================================
+
+# Local-only data and outputs (per BUILD_PLAN §7)
+# Populated by download_data.sh and reproduce.sh; never committed.
+# NOTE: `reproduce/data/input/` is blocked via per-subdir patterns below
+# (not `reproduce/data/input/` directly) so that `!reproduce/data/input/results/`
+# allowlist works — git can't unignore inside an excluded parent directory.
+reproduce/data/input/Data/
+reproduce/data/input/Model/
+reproduce/data/input/General_Eval/
+reproduce/data/input/MCBPE/
+reproduce/data/input/fig4_meta/
+reproduce/data/output/
+reproduce/data/cache/
+reproduce/figures/output/
+models/*/weights/
+models/retrospective/*/weights/
+
+# Allowlist exception: cached prediction CSVs needed for Fig 2-5 reproduction
+# (see below at the END of this file, after all the global extension blocks,
+# so the un-block rules are evaluated last and win).
+
+# Verification report (regenerated each run)
+reproduce/verification.json
+
+# Model checkpoints / weight formats — block ALL of them everywhere
+*.pkl
+*.pth
+*.pt
+*.h5
+*.hdf5
+*.ckpt
+*.safetensors
+*.joblib
+*.onnx
+*.tflite
+*.bin
+*.tar.gz
+
+# Numerical arrays — block by default everywhere
+*.npy
+*.npz
+# Allow tiny reference / demo / test .npy files in their designated dirs:
+!reproduce/data/reference/**/*.npy
+!reproduce/data/demo/**/*.npy
+!tests/test_data/**/*.npy
+
+# Tabular / structured data — block by default everywhere
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.parquet
+*.feather
+*.arrow
+*.jsonl
+
+# Bioinformatics data formats
+*.fasta
+*.fa
+*.fna
+*.fastq
+*.fq
+*.pdb
+*.cif
+*.mmcif
+*.sdf
+*.mol
+*.mol2
+
+# Figure outputs — uncommitted output dirs only
+# (any committed images in docs/, notebooks/, etc. stay tracked as usual)
+reproduce/figures/output/**/*.png
+reproduce/figures/output/**/*.pdf
+reproduce/figures/output/**/*.svg
+
+# Single tracked example data file (Fig 6 verification target):
+!reproduce/data/reference/fig6_values.csv
+
+# Audit / dev / exploratory scripts — NOT part of the reproduction pipeline.
+# These were development tools used to derive the audit CSVs that ship with
+# the Zenodo deposit (under INPUT_DIR/results/fig4_audit/). Reviewers do NOT
+# need to re-run them to reproduce any figure; bash reproduction files do not
+# invoke them.
+reproduce/scripts/fig4/audit_baseline_comparison_128.py
+reproduce/scripts/fig4/audit_uniform_vs_sigmaC.py
+reproduce/scripts/fig4/audit_bcr_baseline_comparison.py
+reproduce/scripts/fig4/derive_bcr_cache_from_audit.py
+reproduce/scripts/fig5/audit_recal_binning_comparison.py
+reproduce/scripts/fig6/audit_panpep_anchor_ablation.py
+
+# PRP-TCR (Wang et al. 2026) was an exploratory 6th retrospective study
+# investigated during method development but EXCLUDED from final Fig 6 due
+# to a setup-precondition violation (test set was the model's own top
+# predictions → selection bias). Scripts are kept locally for audit purposes
+# but not part of the published reproduction.
+reproduce/scripts/fig6/compute_fig6_prp_tcr_recal.py
+reproduce/scripts/fig6/generate_fig6_prp_tcr_panels.py
+reproduce/scripts/fig6/regen_fig6_j_panpep_only.py
+
+# Fig 6 author model predictions (~5.8 MB total across 11 files) — tracked
+# so reviewers can run `prepare_fig6_data.sh + reproduce_fig6.sh` in 2 commands
+# WITHOUT needing to fetch CaliPPer's Zenodo Record 2 or re-run author inference.
+# prepare_fig6_data.sh stages these into INPUT_DIR/results/...
+!reproduce/data/cached_predictions/
+!reproduce/data/cached_predictions/**/*.csv
+!reproduce/data/cached_predictions/MANIFEST.tsv
+
+# =============================================================================
+# Fig 2-5 cached prediction allowlist (must be LAST so it wins over the
+# global extension blocks above)
+# =============================================================================
+!reproduce/data/input/results/
+!reproduce/data/input/results/**/
+!reproduce/data/input/results/**/*.csv
+!reproduce/data/input/results/**/*.npy
+!reproduce/data/input/results/**/*.npz
+!reproduce/data/input/results/**/*.json
+!reproduce/data/input/results/**/*.txt
+
+# Re-block model artifacts inside results/ (these are 200+ MB and not needed
+# for reproduction; reviewers re-run inference via Tier-2 to regenerate)
+reproduce/data/input/results/**/*.pt
+reproduce/data/input/results/**/*.pkl
+reproduce/data/input/results/**/*.png
+reproduce/data/input/results/**/*.pdf
+reproduce/data/input/results/**/*.pth
+reproduce/data/input/results/**/*.h5
+reproduce/data/input/results/**/*.ckpt
+
+# Re-exclude cached-file groups per user decisions (2026-06-06):
+# - fig2_cache/: distance arrays regeneratable by Stage 0 of reproduce_fig{3,5}.sh
+# - 6 BCR CV cache files: Tier-2-only data with broken regen chain in Tier-1
+# - sim_cache_v2/ dirs: pairwise BLOSUM similarity matrix intermediates,
+#   regeneratable by Stage 0 of reproduce_fig6.sh. Contains 1 file >100 MB
+#   (majority_test_binding_TCR.npz = 218 MB) which would exceed GitHub limit.
+# - blosum_comparison/cache/: pairwise BLOSUM intermediate caches (~400 MB),
+#   regeneratable from raw sequences.
+reproduce/data/input/results/fig2_cache/
+reproduce/data/input/results/fig3_fig4_bcr_cache/bcr_fig4_fold4cal_cv_*.csv
+reproduce/data/input/results/**/sim_cache_v2/
+reproduce/data/input/results/**/blosum_comparison/cache/
+# Also exclude *_splits/ which are partition definitions (large CSVs that
+# can be regenerated from the test set and don't directly feed panel scripts)
+reproduce/data/input/results/**/cross_test_logdist/splits/mega_test*.csv

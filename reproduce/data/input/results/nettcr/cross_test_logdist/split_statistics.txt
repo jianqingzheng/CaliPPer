@@ -1,0 +1,15 @@
+Cross-Test LogDist Consistency Experiment
+============================================================
+
+Parameters: K=50, k=0.1, b=0.1, bin_num=8
+Chain cols: ['peptide', 'CDR3a', 'CDR3b']
+Chain weights (sigma_H): peptide=0.0659, CDR3a=0.5211, CDR3b=0.4130
+Training epitopes: 476
+
+            Test Set   N total    N seen  N unseen    % seen
+------------------------------------------------------------
+               mcpas     13723      1683     12040     12.3%
+           seen_test     12038     12038         0    100.0%
+       unseen_fold34     16412         0     16412      0.0%
+         v3_combined      6915      3370      3545     48.7%
+         v4_combined     13069      6831      6238     52.3%

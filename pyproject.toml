@@ -1,0 +1,92 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "calipper"
+version = "0.1.0"
+description = "Calibration and Prediction of Performance for binding-prediction models via Sample-to-Domain Distance and distance-aware Bayesian recalibration."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [
+    { name = "CaliPPer Authors" }
+]
+keywords = [
+    "binding prediction",
+    "TCR",
+    "BCR",
+    "MHC",
+    "calibration",
+    "performance estimation",
+    "distance metric",
+    "out-of-distribution",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "numpy>=1.23",
+    "pandas>=1.5",
+    "scipy>=1.10",
+    "scikit-learn>=1.2",
+    "matplotlib>=3.6",
+    "Levenshtein>=0.21",
+    "openpyxl>=3.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "ruff>=0.1",
+    "pre-commit>=3.0",
+    "nbstripout>=0.6",
+]
+notebooks = [
+    "jupyter>=1.0",
+    "ipykernel>=6.20",
+    "seaborn>=0.12",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/[org]/CaliPPer"
+"Source" = "https://github.com/[org]/CaliPPer"
+"Manuscript" = "[manuscript DOI placeholder]"
+"Zenodo data" = "[ZENODO_DATA_DOI placeholder]"
+"Zenodo weights" = "[ZENODO_WEIGHTS_DOI placeholder]"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["calipper*", "PAPE*", "MCBPE*"]
+exclude = ["tests*", "notebooks*", "reproduce*", "models*", "docs*"]
+# PAPE is a top-level sibling package because calipper.core imports `from PAPE.pape_core import ...`
+# at module level. M-CBPE is the second comparator (added in P3). Both are installed alongside
+# calipper so the canonical import paths in core.py and the fig4/5 baseline scripts work
+# without sys.path hacks. See published_repo/BUILD_PROGRESS.md decision log for rationale.
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311", "py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]  # line-length handled by black
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --tb=short"
