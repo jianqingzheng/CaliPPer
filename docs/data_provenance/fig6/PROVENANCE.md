@@ -28,31 +28,19 @@ It populates `INPUT_DIR/` with two complementary categories of files, both of wh
 
 `reproduce_fig6.sh` then regenerates DISTANCES (Stage 0a-0f) from the raw data and combines them with the staged author predictions (read in Stage 1) to produce Panel E.
 
-The author predictions are committed (rather than auto-generated from the inference scripts) because re-running inference requires model weights — see "Why not wire inference into `prepare_fig6_data.sh`?" below. The total committed-prediction footprint is only 5.8 MB; model weights (which would otherwise need to be re-fetched) are 28 GB.
+The author predictions are committed (rather than auto-generated from the inference scripts) because re-running inference requires model weights from authors' GitHub/Zenodo repositories. The committed prediction footprint is only 5.8 MB.
 
-### Why not wire inference into `prepare_fig6_data.sh`?
+### Why not wire inference into `prepare_fig6_data.sh` by default?
 
-Authors' model predictions (`*_predictions.csv`) require running each author's model on each test set. The inference scripts ARE in CaliPPer (`reproduce_fig6_xbcr.py`, `eval_deepantigen_*.py`, `reproduce_fig6_bigmhc.py`, `eval_panpep_retrospective.py`), but they need model weights:
+Authors' model predictions (`*_predictions.csv`) require running each author's model on each test set. The inference scripts ARE in CaliPPer (`reproduce_fig6_xbcr.py`, `eval_deepantigen_*.py`, `reproduce_fig6_bigmhc.py`, `eval_panpep_retrospective.py`), and the weights come from each author's own GitHub/Zenodo deposit (not from CaliPPer):
 
-- **PanPep**: weights are 1.5 MB, bundled inside `PanPep-v1.0.0.zip` — could be wired into prep.
-- **deepAntigen**: weights ~50 MB, distributed via GitHub repo — could be wired into prep.
-- **AntibioticsAI**: no inference needed (predictions are in the Excel) — already self-contained.
-- **BigMHC**: weights are large (~5 GB BiLSTM ensemble); require `download_data.sh --record 1` (Zenodo Record 1, 28 GB total).
-- **XBCR-net**: weights ~50 MB TF/Keras format; require `download_data.sh --record 1`.
+- **PanPep**: weights are 1.5 MB, bundled inside the authors' `PanPep-v1.0.0.zip` (Zenodo DOI 10.5281/zenodo.7544387) — auto-fetched by `prep_fig6_panpep.py`.
+- **deepAntigen**: weights ~50 MB, distributed via authors' GitHub `JiangBioLab/deepAntigen` — auto-fetched by `prep_fig6_deepantigen.py`.
+- **AntibioticsAI**: no inference needed (predictions are in the authors' Nature supplementary Excel) — already self-contained.
+- **BigMHC**: weights ~5 GB BiLSTM ensemble; fetched from authors' Zenodo (DOI 10.5281/zenodo.7611232) via `prep_fig6_bigmhc.py` — large; consider committed predictions instead.
+- **XBCR-net**: weights ~50 MB TF/Keras format; fetched from authors' GitHub `jianqingzheng/XBCR-net` via `prep_fig6_xbcr.py`.
 
-`prepare_fig6_data.sh` accepts an `--include-inference` flag that tries to run inference for studies where weights are accessible without Record 1 (PanPep + deepAntigen + AntibioticsAI). For BigMHC/XBCR-net inference, the message points the reviewer at `download_data.sh --record 1` first.
-
-### Provenance-traceable reproduction (no Zenodo deposit at all)
-
-For a reviewer who refuses to use CaliPPer's pre-packaged deposit and wants every file traceable to an author's DOI:
-
-```bash
-bash reproduce/download_data.sh --record 1                          # model weights only (~28 GB)
-bash reproduce/prepare_fig6_data.sh --include-inference             # raw data + run inference
-bash reproduce/reproduce_fig6.sh                                    # Stage 0 distance regen + Panel E verify
-```
-
-This still requires `--record 1` (model weights from CaliPPer's Zenodo, since authors do not all publish weights in a single canonical location), but every other file in INPUT_DIR is provenance-traceable to an author's published DOI.
+`prepare_fig6_data.sh` accepts an `--include-inference` flag that runs inference for studies where weights are small enough to auto-fetch (PanPep + deepAntigen + AntibioticsAI). For BigMHC/XBCR-net, the script prints instructions to fetch their (large) weights from the authors' published deposits if the reviewer wants to re-run inference rather than use the committed predictions.
 
 ### Smoke-tested 2026-06-04
 
@@ -67,10 +55,7 @@ Two genuine manual steps remain (cannot be auto-scraped):
 1. **Mendeley datasets** (XBCR + BigMHC): some Mendeley versions require browser login. Script tries direct API URL first; on failure prints exact source page + target path.
 2. **ImmuneCODE-MIRA** (deepAntigen Panel C/D only — Panel E reproduces without it): Adaptive Biotechnologies portal requires registration.
 
-Contrast with `reproduce/download_data.sh`:
-- `download_data.sh --record 1` = model weights (~28 GB) from CaliPPer's Zenodo Record 1.
-- `download_data.sh --record 2` = pre-extracted data + pre-computed predictions (~9 GB) from CaliPPer's Zenodo Record 2.
-- `prepare_fig6_data.sh` = provenance path, fetches raw data from authors' DOIs (~120 MB cumulative direct + manual Mendeley/ImmuneCODE) and runs extraction. Does NOT include pre-computed predictions unless `--include-inference` is passed.
+> **No Zenodo deposit from CaliPPer** (retired 2026-06-10). All files needed for reproduction are either committed to this repo (~360 MB total: scripts + cached predictions + Tier-2 training data) or auto-fetched from authors' original DOIs by `prepare_fig6_data.sh`.
 
 ---
 

@@ -89,11 +89,14 @@ repo. They have not been patched for CaliPPer-local paths because:
 
 1. The user instruction (2026-05-30) was "no need to retrain the models",
    so we don't need to make them runnable in the CaliPPer/-only sandbox.
-2. Path-patching for retraining would require staging the full training
-   data (~600 MB to 1 GB) which is not part of the default Zenodo bundle.
-3. Reviewers who want to retrain should set up the research repo (per
-   `INSTALL.md` of the original `general_eval/` repo) and run these scripts
-   from there.
+2. Training data IS committed to CaliPPer at `reproduce/data/input/Data/`
+   (TCR ~52 MB + BCR ~125 MB across `tcr_seq/` + `bcr_seq/`), so Tier-2
+   retraining is fully self-contained — no external Zenodo deposit needed
+   (Zenodo retired 2026-06-10).
+3. Reviewers who want to retrain can either: (a) run these scripts from
+   within CaliPPer/ after adapting the few hard-coded research-repo paths
+   to point at `reproduce/data/input/Data/`, or (b) clone the original
+   research repo and run from there.
 
 If a future need arises to run these from within CaliPPer/ (e.g., a fully
 self-contained retraining demo), apply the `_paths.py` bootstrap pattern
