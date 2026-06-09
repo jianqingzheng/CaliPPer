@@ -31,11 +31,11 @@ Code for the paper **"Quantifying, predicting and improving AI model performance
 
 CaliPPer combines a **Sample-to-Domain Distance (S2DD)** with **distance-aware Bayesian recalibration** to:
 
-1. Quantify how a model's accuracy degrades as test data drifts from training (per-distance degradation curve).
-2. Predict aggregate performance on unlabelled cohorts without test labels.
-3. Reweight per-sample confidence scores to improve top-k true discovery rates.
+1. Model-level: Quantify how a model's accuracy degrades as test data drifts from training (per-distance degradation curve).
+2. Data-level: Predict aggregate performance on unlabelled cohorts without test labels.
+3. Sample-level: Reweight per-sample confidence scores to improve top-k true discovery rates.
 
-The method is post-hoc (no retraining), modular across base distance metrics (Levenshtein, BLOSUM, ESM-2 embedding, Morgan fingerprint), and validated across 10 primary models + 5 retrospective published studies (XBCR-net, deepAntigen, AntibioticsAI, BigMHC, PanPep).
+The method is post-hoc (no retraining), modular across base distance metrics, spanning sequence-, structure-, embedding-, or even chemistry-based distances (Levenshtein, BLOSUM, ESM-2 embedding, TCRdist, RMSD, Morgan fingerprint), and validated across 10 primary models + 5 retrospective published studies (XBCR-net, deepAntigen, AntibioticsAI, BigMHC, PanPep).
 
 ---
 
