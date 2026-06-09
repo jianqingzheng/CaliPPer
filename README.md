@@ -126,10 +126,9 @@ Fig 2-5 evaluate the S2DD + recalibration framework across **10 primary models**
 
 ### 3.1. Tier 1: from cached predictions (~5 min, no training)
 
-Reproduces manuscript values bit-exact from the prediction CSVs committed to CaliPPer's Zenodo Record 2 (~9 GB).
+Reproduces manuscript values bit-exact from cached author prediction CSVs **already committed to this repo** (~172 MB across 166 files). No external download required.
 
 ```shell
-bash reproduce/download_data.sh        # fetch Zenodo Record 2 cached predictions (~9 GB, one-time)
 bash reproduce/reproduce_fig4.sh       # ~30s   → 12/12 panels (highest deposit coverage)
 bash reproduce/reproduce_fig5.sh       # ~230s  → 12/15 panels (3 BCR panels need Tier 2)
 bash reproduce/reproduce_fig2.sh       # ~4s    → 45/60 |r| cells bit-exact (5 ATM-TCR cells affected by 2026-05-20 retrain)

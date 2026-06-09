@@ -7,7 +7,6 @@
 #   make lint            # ruff + black --check
 #   make format          # black + ruff --fix (writes changes)
 #   make verify-env      # pre-flight: Python, packages, data, GPU
-#   make download-data   # fetch Zenodo Records 1 + 2
 #   make reproduce-all   # regenerate all 5 figure values + verify
 #   make reproduce-fig FIG=2   # regenerate just one figure (any of 2,3,4,5,6)
 #   make verify          # verify regenerated values against committed reference
@@ -55,10 +54,6 @@ format:  ## apply black + ruff --fix
 .PHONY: verify-env
 verify-env:  ## pre-flight check (Python, packages, calipper, data, GPU)
 	bash reproduce/verify_environment.sh
-
-.PHONY: download-data
-download-data:  ## fetch Zenodo Records 1 + 2 (~37 GB)
-	bash reproduce/download_data.sh
 
 .PHONY: reproduce-all
 reproduce-all:  ## regenerate all 5 figures + run verify.sh

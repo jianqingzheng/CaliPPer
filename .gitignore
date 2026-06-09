@@ -95,11 +95,11 @@ secrets/
 # --record 1` from CaliPPer's Zenodo (28 GB). Neither is tracked here.
 # =============================================================================
 
-# Local-only data and outputs (per BUILD_PLAN §7)
-# Populated by download_data.sh and reproduce.sh; never committed.
-# NOTE: `reproduce/data/input/` is blocked via per-subdir patterns below
-# (not `reproduce/data/input/` directly) so that `!reproduce/data/input/results/`
-# allowlist works — git can't unignore inside an excluded parent directory.
+# Local-only data and outputs (per BUILD_PLAN §7).
+# Populated by `prepare_fig6_data.sh` (Fig 6 raw author data) at run time
+# and by `reproduce_fig*.sh` (stage 0 distance regen) at run time;
+# never committed. Tier-2 training data IS committed under
+# reproduce/data/input/Data/{tcr_seq,bcr_seq}/ (see allowlist below).
 reproduce/data/input/Data/
 reproduce/data/input/Model/
 reproduce/data/input/General_Eval/
@@ -110,6 +110,9 @@ reproduce/data/cache/
 reproduce/figures/output/
 models/*/weights/
 models/retrospective/*/weights/
+
+# Allowlist for Tier-2 training data is at the END of this file
+# (after global extension blocks so unblock rules win)
 
 # Allowlist exception: cached prediction CSVs needed for Fig 2-5 reproduction
 # (see below at the END of this file, after all the global extension blocks,
@@ -238,3 +241,29 @@ reproduce/data/input/results/**/blosum_comparison/cache/
 # Also exclude *_splits/ which are partition definitions (large CSVs that
 # can be regenerated from the test set and don't directly feed panel scripts)
 reproduce/data/input/results/**/cross_test_logdist/splits/mega_test*.csv
+
+# =============================================================================
+# Tier-2 training data allowlist (must be LAST so it wins over global blocks)
+# Committed so reviewers can retrain the 10 primary models without Zenodo.
+# Total ~178 MB across TCR (52 MB) + BCR (126 MB) committed; rest of
+# Data/ stays gitignored.
+# =============================================================================
+!reproduce/data/input/Data/
+!reproduce/data/input/Data/tcr_seq/
+!reproduce/data/input/Data/tcr_seq/proc_files/
+!reproduce/data/input/Data/tcr_seq/proc_files/tcr_cross_val_fold*/
+!reproduce/data/input/Data/tcr_seq/proc_files/tcr_cross_val_fold*/**
+!reproduce/data/input/Data/tcr_seq/proc_files/tcr_ml_v4/
+!reproduce/data/input/Data/tcr_seq/proc_files/tcr_ml_v4/**
+!reproduce/data/input/Data/bcr_seq/
+!reproduce/data/input/Data/bcr_seq/sars_bind/
+!reproduce/data/input/Data/bcr_seq/sars_bind/**
+!reproduce/data/input/Data/bcr_seq/flu_bind/
+!reproduce/data/input/Data/bcr_seq/flu_bind/**
+!reproduce/data/input/Data/bcr_seq/XBCR_net_binding/
+!reproduce/data/input/Data/bcr_seq/XBCR_net_binding/**
+
+# Re-block model artifacts even inside the allowed Data/ subtree
+reproduce/data/input/Data/**/*.pt
+reproduce/data/input/Data/**/*.pkl
+reproduce/data/input/Data/**/*.h5

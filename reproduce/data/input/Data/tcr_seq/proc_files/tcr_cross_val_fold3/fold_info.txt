@@ -1,0 +1,27 @@
+Fold 3 Statistics
+========================================
+
+Train:
+  Samples:    28120
+  Positives:  6066 (0.2157)
+  Negatives:  22054
+  Epitopes:   620
+
+Validation:
+  Samples:    4091
+  Positives:  774 (0.1892)
+  Negatives:  3317
+  Epitopes:   591
+
+Test:
+  Samples:    8305
+  Positives:  1766 (0.2126)
+  Negatives:  6539
+  Epitopes:   163
+
+Epitope Overlap Check:
+  Test-Train overlap: 0 epitopes
+  Test-Val overlap:   0 epitopes
+  Val subset of Train: True
+
+Total samples: 40516
