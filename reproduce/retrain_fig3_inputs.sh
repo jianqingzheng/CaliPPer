@@ -45,7 +45,7 @@
 # default — promotion is opt-in only).
 #
 # Standard reviewer workflow with --promote (single-shot full reproduction):
-#   bash reproduce/download_data.sh
+#   # ([retired] retired 2026-06-10 — data committed to reproduce/data/input/)
 #   bash reproduce/retrain_fig3_inputs.sh --all --promote   # ~11-15 GPU-hours (TCR ~5-6 + BCR ~6-9)
 #   bash reproduce/reproduce_fig2.sh                         # all 60 cells
 #   bash reproduce/reproduce_fig3.sh                         # all 9 regenerable panels

@@ -1,11 +1,11 @@
 """End-to-end fig6 XBCR-net pipeline on FRESH inference predictions.
 
 Self-contained: reads inputs from reproduce/data/input/ (gitignored,
-populated by download_data.sh) and writes outputs to
+committed to reproduce/data/input/) and writes outputs to
 reproduce/data/output/recal_data/ (also gitignored). Does not modify
 any committed file.
 
-Required input (must be staged by download_data.sh):
+Required input (must be staged by [retired]):
   reproduce/data/input/results/xbcr_retrospective/fresh_inference/panel1_test_with_fresh_predictions.csv
 
 Usage:

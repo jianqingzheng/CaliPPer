@@ -17,7 +17,7 @@ Usage from a script under ``reproduce/scripts/figN/``::
 
 After import, the canonical destinations are:
 
-  - Read inputs       -> INPUT_DIR  (gitignored, populated by download_data.sh)
+  - Read inputs       -> INPUT_DIR  (gitignored, committed to reproduce/data/input/)
   - Intermediate CSVs -> OUTPUT_DIR (gitignored, populated at runtime)
   - Scratch / cache   -> CACHE_DIR  (gitignored, populated at runtime; replaces /tmp/)
   - Reference values  -> REFERENCE_DIR (committed, the verify.sh target)

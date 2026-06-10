@@ -12,7 +12,7 @@
 #            Stage 1 of reproduce_fig6.sh expects. The CSVs ARE committed
 #            to the repo (since they require ~28 GB of model weights to
 #            regenerate via author inference); this avoids needing
-#            `download_data.sh --record 2` for the 2-command flow.
+#            `[retired] --record 2` for the 2-command flow.
 #
 #   Stage 1-5: fetches RAW SEQUENCE / SMALL-MOLECULE DATA from authors'
 #            original sources (Nature, Mendeley, Zenodo, GitHub) and stages
@@ -31,7 +31,7 @@
 # (`reproduce_fig6_*.py`, `eval_*_retrospective.py`). This requires model
 # weights for each study; PanPep + deepAntigen weights come with this
 # script's data fetch (Zenodo/GitHub), but BigMHC + XBCR-net inference
-# requires `download_data.sh --record 1` (~28 GB) for their model weights.
+# requires `[retired] --record 1` (~28 GB) for their model weights.
 # Without --include-inference, the committed prediction CSVs are used.
 #
 # Studies fetched (5 total):
@@ -100,7 +100,7 @@ echo "Target: \$INPUT_DIR = $REPRO_DIR/data/input/"
 if [[ $INCLUDE_INFERENCE -eq 1 ]]; then
   echo "Inference: ENABLED (will run author inference scripts after data fetch)"
   echo "           BigMHC/XBCR-net inference requires model weights from"
-  echo "           bash reproduce/download_data.sh --record 1 (~28 GB)"
+  echo "           # ([retired] retired 2026-06-10 — data committed to reproduce/data/input/) --record 1 (~28 GB)"
 else
   echo "Inference: disabled (pass --include-inference to run author inference)"
 fi
@@ -120,9 +120,9 @@ MANUAL_PENDING=0
 # Stage 0: copy cached prediction CSVs (committed, ~5.8 MB) into the runtime
 # INPUT_DIR/results/ locations Stage 1 of reproduce_fig6.sh expects. This is
 # what makes the 2-command flow (prepare + reproduce) work without needing
-# CaliPPer's Zenodo Record 2. The CSVs themselves are author model outputs
+# the CaliPPer repo (committed). The CSVs themselves are author model outputs
 # pre-computed by inference scripts in reproduce/scripts/fig6/; we commit
-# them because re-running inference requires model weights (~28 GB Record 1).
+# them because re-running inference requires author model weights from upstream GitHub/Zenodo deposits.
 CACHED_PRED_DIR="$REPRO_DIR/data/cached_predictions"
 MANIFEST="$CACHED_PRED_DIR/MANIFEST.tsv"
 if [[ -f "$MANIFEST" ]]; then
@@ -180,7 +180,7 @@ done
 
 # Optionally run author inference scripts to populate the pre-computed
 # *_predictions.csv files that Stage 1 of reproduce_fig6.sh expects.
-# These are usually provided by `download_data.sh --record 2` (Zenodo deposit).
+# These are usually provided by `[retired] --record 2` (Zenodo deposit).
 if [[ $INCLUDE_INFERENCE -eq 1 ]]; then
   echo "─────────────────────────────────────────────────────"
   echo "[prep] --include-inference: running author inference scripts"
@@ -203,13 +203,13 @@ if [[ $INCLUDE_INFERENCE -eq 1 ]]; then
         echo
         ;;
       bigmhc)
-        echo "[prep] BigMHC: requires model weights from download_data.sh --record 1 (~28 GB total)."
+        echo "[prep] BigMHC: requires model weights from [retired] --record 1 (~28 GB total)."
         echo "       To run BigMHC inference manually after weights are staged:"
         echo "         python3 reproduce/scripts/fig6/reproduce_fig6_bigmhc.py"
         echo
         ;;
       xbcr)
-        echo "[prep] XBCR-net: requires model weights from download_data.sh --record 1 (~28 GB total)."
+        echo "[prep] XBCR-net: requires model weights from [retired] --record 1 (~28 GB total)."
         echo "       To run XBCR-net inference manually after weights are staged:"
         echo "         python3 reproduce/scripts/fig6/reproduce_panel1_fresh_predictions.py"
         echo "         python3 reproduce/scripts/fig6/reproduce_fig6_xbcr_panel2.py"
@@ -257,7 +257,7 @@ if [[ $PREP_FAILED -eq 0 ]]; then
     echo "To regenerate predictions from scratch by running authors' models, use"
     echo "the --include-inference flag (PanPep + deepAntigen + AntibioticsAI"
     echo "inference run automatically; BigMHC + XBCR-net inference also need"
-    echo "model weights from 'bash reproduce/download_data.sh --record 1')."
+    echo "model weights from '# ([retired] retired 2026-06-10 — data committed to reproduce/data/input/) --record 1')."
   fi
   exit 0
 fi

@@ -8,7 +8,7 @@
 # │ THIS BASH FILE = FROM-SCRATCH REPRODUCTION (no model retraining).     │
 # │                                                                       │
 # │ Reviewers do NOT need to retrain any model to reproduce Fig 4:        │
-# │     bash reproduce/download_data.sh   # fetch Zenodo data once        │
+# │     # (data committed to reproduce/data/input/; no external download needed)        │
 # │     bash reproduce/reproduce_fig4.sh  # this script (~5 min)          │
 # │                                                                       │
 # │ Fig 4 mostly reads from committed audit CSVs (deposited as part of    │
@@ -59,7 +59,7 @@
 #     CSVs match exactly.
 #
 # Prerequisites: the following input data must be staged at
-# INPUT_DIR (populated by download_data.sh):
+# INPUT_DIR (committed to reproduce/data/input/):
 #   - results/fig3_fig4_tcr_cache/*.csv (TCR per-model bin/epitope cache)
 #   - results/fig3_fig4_bcr_cache/bcr_fig4_fold4cal_*.csv (12 BCR CSVs)
 #   - results/fig4_audit/{audit_baseline_comparison_128_blosum-sqrt_results,

@@ -9,7 +9,7 @@
 # │ THIS BASH FILE = FROM-SCRATCH REPRODUCTION (no model retraining).     │
 # │                                                                       │
 # │ Reviewers do NOT need to retrain any model to reproduce Fig 2:        │
-# │     bash reproduce/download_data.sh   # fetch Zenodo data once        │
+# │     # (data committed to reproduce/data/input/; no external download needed)        │
 # │     bash reproduce/reproduce_fig2.sh  # ~4-10s, this script           │
 # │                                                                       │
 # │ The Zenodo deposit includes the per-model prediction CSVs (the        │

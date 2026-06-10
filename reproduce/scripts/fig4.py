@@ -10,16 +10,19 @@ values for Figure 4. Writes:
 Panel scripts orchestrated (in `reproduce/scripts/fig4/`):
   - cache_tcr_fig4_v27_predictions.py
   - cache_bcr_fig4_fold4cal.py
-  - audit_baseline_comparison_128.py
-  - audit_bcr_baseline_comparison.py
-  - audit_uniform_vs_sigmaC.py
-  - derive_bcr_cache_from_audit.py
   - generate_fig4_scatter_panels.py
   - generate_fig4_bcr_scatter_panels.py
   - generate_fig4_method_comparison_boxplots.py
   - generate_fig4_bcr_method_comparison_boxplots.py
   - gen_fig4_heatmaps_reordered.py
   - gen_fig4_error_scatter_and_consistency.py
+
+The 4 baseline-comparison audit CSVs that some panels read (e.g.,
+`audit_baseline_comparison_128_blosum-sqrt_results.csv`,
+`audit_bcr_baseline_results.csv`) are pre-committed to
+`reproduce/data/input/results/fig4_audit/`; the audit scripts that
+generated them are dev-only and not invoked from the reproduction
+pipeline.
   - gen_fig4_unique_scatter.py
   - generate_remaining_panels.py
 
@@ -52,7 +55,7 @@ def main(args: argparse.Namespace) -> int:
     # Canonical values to extract (Fig 4):
     #   - Method comparison: AUROC MAE + AP MAE (TCR + BCR, 3 methods)
     #   - Per-subset (epitope/antigen) prediction errors
-    #   - Audit comparison numbers (audit_baseline_comparison_128 results)
+    #   - Baseline comparison numbers (from committed fig4_audit/ CSVs)
     placeholder = pd.DataFrame({
         'method': ['PAPE', 'M-CBPE', 'S2DD'],
         'tcr_AUROC_MAE': [0.036, 0.044, 0.033],
@@ -70,7 +73,7 @@ def main(args: argparse.Namespace) -> int:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-root", required=True,
-                        help="Path to reproduce/data/input/ (populated by download_data.sh)")
+                        help="Path to reproduce/data/input/ (committed to reproduce/data/input/)")
     parser.add_argument("--out-data", required=True,
                         help="Path to reproduce/data/output/ (where figN_values.csv is written)")
     parser.add_argument("--out-fig", required=True,

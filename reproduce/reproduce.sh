@@ -50,7 +50,7 @@ if [[ $VERIFY_ONLY -eq 0 ]]; then
     rc=$?
     echo
     if [[ $rc -eq 2 ]]; then
-      echo "→ Run: bash reproduce/download_data.sh"
+      echo "→ Run: # ([retired] retired 2026-06-10 — data committed to reproduce/data/input/)"
     fi
     exit $rc
   fi

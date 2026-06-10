@@ -74,7 +74,7 @@ def main(args: argparse.Namespace) -> int:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-root", required=True,
-                        help="Path to reproduce/data/input/ (populated by download_data.sh)")
+                        help="Path to reproduce/data/input/ (committed to reproduce/data/input/)")
     parser.add_argument("--out-data", required=True,
                         help="Path to reproduce/data/output/ (where figN_values.csv is written)")
     parser.add_argument("--out-fig", required=True,

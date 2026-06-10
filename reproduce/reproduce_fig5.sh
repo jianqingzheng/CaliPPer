@@ -10,7 +10,7 @@
 # │                                                                       │
 # │ Reviewers do NOT need to retrain any model to reproduce Fig 5 TCR     │
 # │ panels:                                                               │
-# │     bash reproduce/download_data.sh   # fetch Zenodo data once        │
+# │     # (data committed to reproduce/data/input/; no external download needed)        │
 # │     bash reproduce/reproduce_fig5.sh  # this script (~10 min)         │
 # │                                                                       │
 # │ TCR panels (b, c, d, e, f-TCR, g-TCR, h-TCR, i-TCR) reproduce         │

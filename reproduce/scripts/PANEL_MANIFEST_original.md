@@ -1,5 +1,14 @@
 # Panel Manifest — Nature Methods Manuscript
 
+> ⚠ **ARCHIVED snapshot (2026-05-09).** This manifest references several
+> audit/dev scripts that were removed from the public repo in commits
+> `84f12c5a` and `fff4e89` (2026-06-04): `audit_baseline_comparison_128.py`,
+> `audit_bcr_baseline_comparison.py`, `audit_uniform_vs_sigmaC.py`,
+> `audit_recal_binning_comparison.py`, etc. The CSVs they produced are
+> still committed at `reproduce/data/input/results/fig4_audit/` and
+> consumed by panel generators. This document is kept for historical
+> reference; it is not used by any reproduction script.
+
 **Single source of truth** for all figure panels. Updated 2026-05-09.
 
 ## Distance Metric Variants
