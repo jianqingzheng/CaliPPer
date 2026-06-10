@@ -160,7 +160,7 @@ bash reproduce/reproduce_fig{2,3,5}.sh                          # re-run after r
 
 <div align="center">
 
-| Target | Model | Framework | Time (GPU) |
+| Target | Model | Package | Time (GPU) |
 |---|---|---|---:|
 | `nettcr_{cv,ct}` | NetTCR | TF/Keras | ~1 h |
 | `atm_tcr_{cv,ct}` | ATM-TCR | PyTorch | ~3 h |
@@ -172,8 +172,6 @@ bash reproduce/reproduce_fig{2,3,5}.sh                          # re-run after r
 | **Total** | 5 TCR + 5 BCR | 5 conda envs | **~11–15 GPU-hours** |
 
 </div>
-
-> **Tier 2 is non-deterministic** (random init + GPU drift + library version drift). Retrained \|r\| values will differ from cached within a tolerance band that covers the cached values; the deposit is the canonical artifact.
 
 ---
 
@@ -209,10 +207,10 @@ Any publication using this source code or the released model weights should cite
 ```bibtex
 @article{zheng2026calipper,
   title={Quantifying, predicting and improving AI model performance for binding prediction},
-  author={Zheng, Jianqing and ...},
+  author={Zheng, Jian-Qing and Lou, Hantao and Yin, Zinan and Farrar, Sam and Zhou, Yuze and Antoun, Elie and Wang, Xiangxi and Cao, Xuetao and Dong, Tao},
   journal={},
   year={2026},
-  doi={[]}
+  doi={10.48550/arXiv.2606.07258}
 }
 ```
 
