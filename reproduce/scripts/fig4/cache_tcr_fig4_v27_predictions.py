@@ -11,7 +11,7 @@ Prediction protocols:
 
 S2DD distance strategy: uniform+znorm_sum (per_epitope strategy).
   Uniform wins all 6 TCR per-epitope cells (+0.007 to +0.049 r vs sigma_C).
-  See audit_uniform_vs_sigmaC.py for verification.
+  See `Manuscript/scripts_manuscript/audit_uniform_vs_sigmaC.py` in the research repo for verification (not bundled in this public release).
 
 Uses predict_subset_metric from calipper.core (v2.7).
 """
