@@ -8,6 +8,17 @@
 
 ---
 
+## Panel C/D vs Panel E test sets (dual-split)
+
+deepAntigen uses **different cal/test pairs** for performance prediction (Fig 6 Panel C/D) and recalibration (Fig 6 Panel E+):
+
+- **Panel C/D (prediction):** zero_shot cal (1{,}714) → **ImmuneCODE** (~50K, independent)
+- **Panel E+ (recalibration):** zero_shot cal (1{,}714) → **neoantigen** (100, pre-selected by deepAntigen as top-ranked candidates from per-patient pools of 1{,}167–41{,}606)
+
+Reason: the 100 neoantigens are model-selected, so the actual aggregate AUROC/AP on them is distorted by pre-filtering and is not a meaningful target for performance prediction. Recalibration's Δ-metrics (ΔAUROC, ΔAP, TDR uplift) are well-defined on the same cohort because the selection bias cancels in the before/after comparison. Full discussion + per-study verification: `docs/methodology/fig6_dual_split.md`. Manuscript reference: main.tex L238.
+
+---
+
 ## Files in CaliPPer INPUT_DIR
 
 ### Raw published data (verbatim copies of author-distributed files)

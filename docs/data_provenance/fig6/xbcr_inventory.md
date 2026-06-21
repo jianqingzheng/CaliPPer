@@ -11,6 +11,12 @@
 
 ---
 
+## Panel C/D vs Panel E test sets
+
+XBCR-net uses **the same cal/test pair** in both Panel C/D (prediction) and Panel E+ (recalibration): Panel 1 WT binders (1{,}293) as cal → Panel 2 Omicron-era mAbs (21) as test. No dual-split needed for this study because the cal-test cohort design is already independent (Panel 1 is pre-Omicron experimental results, Panel 2 is the candidate pool the authors validated experimentally). See `docs/methodology/fig6_dual_split.md` for the cross-study summary.
+
+---
+
 ## Data Sources
 
 | File | Origin | Size |

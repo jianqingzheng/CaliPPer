@@ -6,6 +6,17 @@
 
 ---
 
+## Panel C/D vs Panel E test sets (dual-split)
+
+AntibioticsAI uses **different cal/test pairs** for performance prediction (Fig 6 Panel C/D) and recalibration (Fig 6 Panel E+):
+
+- **Panel C/D (prediction):** **main\_test** (283) cal → **beta-lactam** (505, cross-dataset; structurally distinct compounds with 0 SMILES overlap with main\_test)
+- **Panel E+ (recalibration):** **main\_test halfsplit** cal=odd / test=even (~141 each, distance-interleaved)
+
+Reason: the 283-compound main\_test was nominated by AntibioticsAI for chemical synthesis and antimicrobial assay (selection-biased by the model). The beta-lactam set is an independent compound family chosen by chemical chemistry (not by the model's filtering), so it is the appropriate prediction target. For recalibration, the halfsplit within main\_test simulates a two-stage screening workflow (pilot batch → deployment batch) and Δ-metrics are well-defined regardless of selection bias. Full discussion: `docs/methodology/fig6_dual_split.md`.
+
+---
+
 ## Files in CaliPPer INPUT_DIR
 
 ### Raw published data (verbatim downloads)

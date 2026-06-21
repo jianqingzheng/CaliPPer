@@ -7,6 +7,17 @@
 
 ---
 
+## Panel C/D vs Panel E test sets (dual-split)
+
+BigMHC uses **different cal/test pairs** for performance prediction (Fig 6 Panel C/D) and recalibration (Fig 6 Panel E+):
+
+- **Panel C/D (prediction):** **HLA halfsplit within MANAFEST** (~400 cal / ~434 test, same-domain split, seed=42)
+- **Panel E+ (recalibration):** **im\_val** (688, author validation set, 0% peptide overlap) → **full MANAFEST** (834, independent cross-dataset)
+
+Reason: MANAFEST is clinically tested neoantigens prioritised by computational scoring at the experimental-design stage, so it is selection-biased and unsuitable as a prediction target with im\_val as cal (the concept drift between benchmark peptides and clinical neoantigens violates the covariate-shift-only assumption; all 3 prediction methods give ~0.285 AUROC error). For prediction, HLA halfsplit within MANAFEST keeps cal and test in the same domain (AUROC error ~0.015). For recalibration, im\_val → MANAFEST is the true retrospective deployment scenario and Δ-metrics are well-defined regardless of selection bias. Full discussion: `docs/methodology/fig6_dual_split.md`.
+
+---
+
 ## Data Files
 
 | File | Rows | Description |

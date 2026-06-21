@@ -69,6 +69,8 @@ Two genuine manual steps remain (cannot be auto-scraped):
 | **BigMHC** | Albert et al., *Nature Machine Intelligence* 2023 (Mendeley DOI 10.17632/dvmz6pkzvb) | YES (unzip ZIP; documented below) | `reproduce_fig6_bigmhc.py` (BigMHC inference) | Stage 0b (BLOSUM-sqrt distance) |
 | **PanPep** | Gao et al., *Nature Machine Intelligence* 2023 (Zenodo DOI 10.5281/zenodo.7544387) | NO (verbatim CSVs) | `eval_panpep_retrospective.py` (PanPep inference, staged 2026-06-04) | Stage 0b (BLOSUM-sqrt distance) |
 
+> **On the dual-split design** (why Panel C/D and Panel E use different cal/test pairs for some studies): see `docs/methodology/fig6_dual_split.md`. The summary table above describes the recalibration setup; the prediction setup is described in `docs/methodology/fig6_dual_split.md` and the docstring of `reproduce/scripts/fig6/compute_fig6_panel_c_d.py`.
+
 ---
 
 ## Documented Manual Steps

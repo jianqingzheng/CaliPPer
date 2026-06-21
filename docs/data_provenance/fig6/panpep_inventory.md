@@ -7,6 +7,12 @@
 
 ---
 
+## Panel C/D vs Panel E test sets
+
+PanPep uses **the same cal/test pair** in both Panel C/D (prediction) and Panel E+ (recalibration): a zero-shot peptide halfsplit (245 cal peptides / 246 test peptides, ~832 / ~882 samples, no peptide overlap between halves). No dual-split needed for this study because the halfsplit is already an unbiased same-domain partition. See `docs/methodology/fig6_dual_split.md` for the cross-study summary.
+
+---
+
 ## Model
 
 | File | Path | Description |

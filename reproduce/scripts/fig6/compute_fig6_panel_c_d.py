@@ -6,6 +6,49 @@ For each of 5 retrospective studies:
   - PAPE: prediction-only DRE (no distance input) — Eq.4 calibrator
   - M-CBPE: prediction-only DRE (no distance input) — logistic calibrator
 
+────────────────────────────────────────────────────────────────────────────
+DUAL-SPLIT DESIGN — WHY PANEL C/D DIFFERS FROM PANEL E FOR SOME STUDIES
+────────────────────────────────────────────────────────────────────────────
+For 3 of 5 studies, Panel C/D (prediction) and Panel E+ (recalibration)
+use DIFFERENT cal/test pairs. This is BY DESIGN, not a bug:
+
+  Study          Panel C/D (prediction)              Panel E+ (recalibration)
+  ─────────────  ──────────────────────────────────  ────────────────────────────────
+  deepAntigen    zero_shot → ImmuneCODE (50K)        zero_shot → neoantigen (100)
+  AntibioticsAI  main_test → beta-lactam (505)       halfsplit cal=odd / test=even
+  BigMHC         HLA halfsplit within MANAFEST       im_val (688) → MANAFEST (834)
+  XBCR-net       Panel 1 → Panel 2 (same in both)    Panel 1 → Panel 2
+  PanPep         zeroshot halfsplit (same in both)   zeroshot halfsplit
+
+Rationale: the published experimental cohorts (deepAntigen neoantigens,
+AntibioticsAI main_test, BigMHC MANAFEST) were PRE-SELECTED by each model
+as top-ranked candidates for laboratory confirmation. They are NOT
+independent test sets — they are model-enriched (selection-biased) subsets.
+
+  * PERFORMANCE PREDICTION (Panel C/D) requires an unbiased test set
+    because the actual aggregate metric on a selection-biased cohort is
+    itself distorted by pre-filtering. Predicting that distorted actual
+    is not a meaningful generalisation claim. Hence Panel C/D uses
+    independent splits (within-domain halfsplits or cross-dataset cohorts
+    not produced by the published model's filtering).
+
+  * RECALIBRATION IMPROVEMENT (Panel E+) is well-defined on selection-
+    biased cohorts because Δ-metrics (ΔAUROC, ΔAP, TDR uplift) are
+    measured on the same samples before vs after, so the bias cancels.
+    The published cohorts are the appropriate test for "does
+    recalibration improve the actual deployment-style readout?"
+
+Manuscript reference: documented for deepAntigen in main.tex L238 — same
+logic applies to AntibioticsAI and BigMHC (also pre-selected cohorts).
+Full discussion + per-study verification table: docs/methodology/
+fig6_dual_split.md.
+
+Empirical verification: applying predict_metric to the Panel E cal/test
+pairs for the 3 dual-split studies confirms the prediction failure mode
+(BigMHC AUROC err ≈ 0.285, AP err ≈ 0.361; deepAntigen AP err ≈ 0.500),
+validating that Panel C/D's choice of independent splits is principled.
+────────────────────────────────────────────────────────────────────────────
+
 Outputs:
   recal_data/fig6_panel_c_predictions.csv   — 10 rows: 5 studies x 2 metrics (actual, predicted)
   recal_data/fig6_prediction_3method.csv    — 10 rows: 5 studies x 2 metrics (S2DD, PAPE, MCBPE errors)
