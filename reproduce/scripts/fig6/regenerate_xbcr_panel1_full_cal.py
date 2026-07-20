@@ -1,18 +1,17 @@
 """Regenerate the full XBCR-net Panel-1 calibration set (canonical ~1293 rows).
 
-PROVENANCE / OPTIONAL REGENERATION SCRIPT — not part of the standard reproduce_fig6
-flow. The reproduce pipeline consumes the committed cached artifact
+Optional regeneration script — not part of the standard reproduce_fig6 flow. The
+reproduce pipeline consumes the committed cached artifact
 `results/xbcr_retrospective/reproduction/panel1_cal_full_long_antigens.csv`
 (+ `distance_cache_panel1_full.npz`); this script documents how that artifact was
 produced and lets it be regenerated from the published XBCR-net model.
 
-Why this exists: the default XBCR-net inference encodes each sequence into a [300,20]
-window and then applies vec_shift(seq_shift=20). Any antigen longer than 280 residues
-overflows the window (20 + len > 300) and is silently dropped, leaving only the ~1003
-short-antigen rows. That truncated cal collapses the S2DD AUROC *performance prediction*
-to ~0.58. Re-running model_rbd_0 with long-antigen truncation recovers the ~240 dropped
-rows and restores the manuscript value (AUROC ~0.713). (Recalibration is unaffected — it
-uses the 1003-row cal and reproduces bit-exact, being rank-based.)
+The default XBCR-net inference encodes each sequence into a [300,20] window and
+applies vec_shift(seq_shift=20), so any antigen longer than 280 residues overflows
+the window (20 + len > 300) and is dropped, leaving only the ~1003 short-antigen
+rows. This script re-runs model_rbd_0 with long-antigen truncation so those rows are
+retained, producing the full ~1293-row calibration set used for S2DD performance
+prediction. (Recalibration is unaffected: it uses the 1003-row cal and is rank-based.)
 
 REQUIREMENTS (external to this repo):
   - The published XBCR-net repo (model weights + example-experimental_data.xlsx):
@@ -21,7 +20,6 @@ REQUIREMENTS (external to this repo):
       XBCR_ORIG_REPO=/path/to/xbcr_original_repo python regenerate_xbcr_panel1_full_cal.py
 
 Output: writes panel1_cal_full_long_antigens.csv into the reproduce results dir.
-Validated against the surviving 1003 predictions at max |Δpred| ~5e-3.
 """
 import os
 import sys

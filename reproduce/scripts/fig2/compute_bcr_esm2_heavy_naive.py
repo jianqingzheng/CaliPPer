@@ -5,11 +5,6 @@ BCR CV fold, per test sample the naive distance is the multiplicity-weighted
 MEAN cosine distance to ALL training Heavy chains. Raw embedding distance:
 NO log, NO z-norm, NO top-K, NO min/nearest selection. Single chain (Heavy).
 
-Replaces the previously-used `esm2_log_naive` CSV row, which the
-research-integrity-auditor found to be a uniform MEAN across ALL 3 chains
-(Heavy+Light+variant_seq) with top-K=50 -- multi-chain, mislabeled as
-"single-chain".
-
 Outputs (consumed by gen_distance_comparison_cv_with_naive.py BCR section):
   results/fig2_cache/naive_baseline/bcr_cv_fold{0-4}_esm2_naive_raw.npy
 Embedding cache (reproducibility, avoids re-running ESM2):
@@ -22,7 +17,7 @@ from collections import Counter
 from scipy.stats import pearsonr
 from sklearn.metrics import average_precision_score
 
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, CACHE_DIR, FIG_DIR  # also adds CaliPPer/ to sys.path
 RES = os.path.join(INPUT_DIR, 'results')

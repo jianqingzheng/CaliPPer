@@ -1,22 +1,22 @@
 """Regeneration helper for panel2_omicron_results_3chain_clean.csv.
 
 This script is an OPTIONAL regenerator. The canonical file ships in
-``reproduce/data/input/results/xbcr_retrospective/mab_recalibration/``
-via ``[retired]``. This script writes a regenerated copy to
+``reproduce/data/input/results/xbcr_retrospective/mab_recalibration/``.
+This script writes a regenerated copy to
 ``reproduce/data/output/xbcr_retrospective/mab_recalibration/`` so users
 can diff their regeneration against the staged canonical version.
 
 Schema matches what eval_xbcr_panel2_omicron.py would produce.
 
 Usage:
-    cd <published_repo>/CaliPPer
+    cd /path/to/CaliPPer
     python reproduce/scripts/fig6/reproduce_fig6_xbcr_panel2.py
 """
 import os, sys
 import numpy as np
 import pandas as pd
 
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR  # also adds CaliPPer/ to sys.path
 

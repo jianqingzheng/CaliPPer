@@ -21,7 +21,7 @@ from matplotlib.lines import Line2D
 warnings.filterwarnings('ignore')
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, CACHE_DIR, FIG_DIR  # also adds CaliPPer/ to sys.path
 _FIG_DIR = os.path.join(FIG_DIR, 'fig5')

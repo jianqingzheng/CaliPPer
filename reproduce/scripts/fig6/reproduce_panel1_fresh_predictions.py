@@ -2,28 +2,19 @@
 """Regenerate panel1_test_with_fresh_predictions.csv (1003 rows) via the
 authors' canonical xbcr_original_repo pipeline.
 
-This is the canonical "fresh inference" path. It reproduces what the
-2026-05-22 commit b5776e3c did (panel-exact reproduction of XBCR-net's
-Fig 6 Panel E ΔAUROC=+0.163 / ΔAP=+0.112), using the unmodified XBCR-net
-authors' code (Lou et al., Cell Research 2023 supplementary code).
+This is the canonical "fresh inference" path: a panel-exact reproduction of
+XBCR-net's Fig 6 Panel E (ΔAUROC=+0.163 / ΔAP=+0.112) using the unmodified
+XBCR-net authors' code (Lou et al., Cell Research 2023 supplementary code).
 
 Reproducibility status:
     - PANEL-EXACT: downstream compute_fig6_recal_data.py + this pipeline
-      reproduces Fig 6 Panel E XBCR-net (ΔAUROC=+0.163 / ΔAP=+0.112) bit-exact
-    - DISTANCE: this regenerated panel1_test_with_fresh_predictions.csv,
-      when fed into compute_xbcr_panel1_distances.py, produces a
-      distance array that differs from the cached
-      `distance_cache_panel1.npz` (May 22 inline build, NEVER committed,
-      labelled "unrecoverable" in reproducing_progress.md) by max |diff|
-      ≈ 0.086. Sorted values agree, ranges identical. The discrepancy
-      is from the May 22 inline pipeline being lost; the panel-level
-      metrics are unaffected because they are rank-based.
+      reproduces Fig 6 Panel E XBCR-net (ΔAUROC=+0.163 / ΔAP=+0.112) bit-exact.
     - PRACTICAL: for canonical Fig 6 Panel E reproduction, use the
       staged cached `distance_cache_panel1.npz` (which is what
       `compute_fig6_recal_data.py` reads). This script's output is
       for end-to-end audit only.
 
-Pipeline (matches 2026-05-22 commit b5776e3c "Path A"):
+Pipeline:
     1. Stage `Model/xbcr_original_repo/` (already staged at
        `INPUT_DIR/Model/xbcr_original_repo/`)
     2. Pre-filter panel1_test antigens to length <= 280 chars

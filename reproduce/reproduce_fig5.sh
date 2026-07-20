@@ -2,28 +2,26 @@
 # reproduce_fig5.sh — Fig 5 reproduction (Bayesian recalibration across 10 models).
 #
 # Fig 5 reports S2DD recalibration performance across 5 TCR + 5 BCR models
-# in 15 panels (a–o, panel a spans 2 cols, reindexed 2026-05-26 per
-# PANEL_MANIFEST.md).
+# in 15 panels (a–o, panel a spans 2 cols, per PANEL_MANIFEST.md).
 #
 # ┌───────────────────────────────────────────────────────────────────────┐
 # │ THIS BASH FILE = FROM-SCRATCH REPRODUCTION (no model retraining).     │
 # │                                                                       │
 # │ Reviewers do NOT need to retrain any model to reproduce Fig 5 TCR     │
 # │ panels:                                                               │
-# │     # (data committed to reproduce/data/input/; no external download needed)        │
+# │     # (data committed to reproduce/data/input/; no download needed)   │
 # │     bash reproduce/reproduce_fig5.sh  # this script (~10 min)         │
 # │                                                                       │
 # │ TCR panels (b, c, d, e, f-TCR, g-TCR, h-TCR, i-TCR) reproduce         │
-# │ from deposited TCR cross-test predictions. BCR portions need the      │
-# │ Tier-2 retraining wrapper (BCR cal_predictions.csv files were lost    │
-# │ in the 2026-05-20 incident; see retrain_fig3_inputs.sh which Fig 5   │
-# │ reuses).                                                              │
+# │ from committed TCR cross-test predictions. BCR portions need the      │
+# │ Tier-2 retraining wrapper (BCR cal_predictions.csv files are not      │
+# │ committed; see retrain_fig3_inputs.sh which Fig 5 reuses).            │
 # │                                                                       │
 # │ OPTIONAL — Tier 2 (BCR retraining via Fig 3's wrapper):               │
 # │     bash reproduce/retrain_fig3_inputs.sh --model bcr_ct_fold4cal     │
 # │                                                                       │
-# │ See BUILD_PROGRESS.md "REPRODUCIBILITY RULE — TWO-TIER MODEL" for     │
-# │ the authoritative specification.                                      │
+# │ See the two-tier reproducibility model (Tier 1 cached / Tier 2        │
+# │ retraining) documented in README.md.                                  │
 # └───────────────────────────────────────────────────────────────────────┘
 #
 # Pipeline (9 panel-generation scripts, BLOSUM-sqrt for TCR / Lev for BCR):
@@ -39,7 +37,7 @@
 #
 # Output: reproduce/figures/output/fig5/{lev-logtransf,blosum-sqrt}/fig5_*.{png,pdf}
 #
-# Reproduction scope (post Option-B fixes 2026-06-01, panel-level):
+# Reproduction scope (panel-level):
 # Of the 15 PANEL_MANIFEST panels (a–o):
 #
 #   ✅ 12 panels reproduce with REAL CONTENT (TCR portion at minimum):
@@ -49,7 +47,7 @@
 #
 #   ✗ 3 panels (c, e, m) BCR-only, blocked by missing
 #     bcr_bind_ct_fold4cal/{xbcr,deepaai,mambaaai,mint,rleaai}/cal_predictions.csv
-#     (2026-05-20 incident, proven irrecoverable without retraining).
+#     (not committed; recoverable via Tier-2 retraining).
 #     Run `bash reproduce/retrain_fig3_inputs.sh --model bcr_ct_fold4cal`
 #     to recover via Tier-2 BCR retraining.
 #
@@ -60,14 +58,14 @@
 # INPUT_DIR/results/bcr_bind_ct_fold4cal/{model}/, re-running this bash
 # file fills in the BCR portions.
 #
-# Option-B fixes (2026-06-01):
-#   1. stage_lev_distances_for_fig5.py (new Stage 0): generates the 30
-#      missing Lev per-model TCR distance arrays from the shared fig2
+# Pipeline notes:
+#   1. stage_lev_distances_for_fig5.py (Stage 0): generates the 30
+#      Lev per-model TCR distance arrays from the shared fig2
 #      LogDist computation. Reuses fig2's compute_fig2_levlog_distances.py
 #      to produce {ts}_dist.npy then copies each to per-model
 #      {model}_ct_{ts}_dist.npy (same distance for all 5 TCR models
 #      because distances are sequence-derived, not model-output-derived).
-#   2. Defensive guards added to 7 BCR-dependent scripts: when
+#   2. Defensive guards in the 7 BCR-dependent scripts: when
 #      cal_predictions.csv is missing, the BCR loop skips that model
 #      cleanly (logged warning + continue) rather than crashing the whole
 #      stage. TCR portion of each affected panel still produces.
@@ -193,7 +191,7 @@ if [[ -d "$PANEL_DIR" ]]; then
     echo "  Output: $PANEL_DIR ($N files)"
   fi
   echo
-  echo "  Reproduction scope (post Option-B fixes 2026-06-01):"
+  echo "  Reproduction scope:"
   echo "    ✅ 12/15 panels reproduce with REAL CONTENT (TCR portion at minimum):"
   echo "       a (placeholder), b, d, f, g, h, i, j, k, l, n, o"
   echo "    ⚠ 3/15 panels (c, e, m) require BCR cal_predictions.csv — run"
@@ -208,7 +206,7 @@ else
   exit 1
 fi
 
-# Exit non-zero if any stage failed (was previously always exit 0 — silent fallback fix)
+# Exit non-zero if any stage failed
 if [[ $STAGE_FAILED -gt 0 ]]; then
   exit 2
 fi

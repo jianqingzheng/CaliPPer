@@ -51,7 +51,7 @@ TRAIN_CSV = PROJECT_ROOT / 'Data' / 'tcr_seq' / 'proc_files' / 'deepantigen_data
 N_BINS = 8
 THRESHOLD = CALIBRATION_THRESHOLD
 
-# ── Unified calibration functions (EXACT copy of fig6, audited 2026-04-16) ──
+# ── Unified calibration functions (exact copy of fig6) ──
 _logit = lambda p: np.log(np.clip(p, 1e-12, 1 - 1e-12) /
                            (1 - np.clip(p, 1e-12, 1 - 1e-12)))
 _sigmoid_fn = lambda x: 1.0 / (1.0 + np.exp(-np.clip(x, -500, 500)))

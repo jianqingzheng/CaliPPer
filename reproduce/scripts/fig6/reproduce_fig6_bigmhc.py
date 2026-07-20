@@ -5,7 +5,7 @@ import os, sys, time
 import numpy as np
 import pandas as pd
 
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, CACHE_DIR  # also adds CaliPPer/ to sys.path
 
@@ -62,12 +62,7 @@ os.makedirs(OUT_DIR, exist_ok=True)
 # Test: MANAFEST (834 samples, clinical neoantigens, experimental immunogenicity labels)
 # Anchor: train anchor from im_train IM predictions
 #
-# Previous pipeline was wrong:
-#   - Used EL model instead of IM (fixed 2026-05-10)
-#   - Used peptide-only S2DD (BigMHC uses both HLA+peptide)
-#   - Used halfsplit within MANAFEST (not true retrospective)
 # im_test ≈ MANAFEST (99.8% pair overlap, 100% label agreement) — cannot use as cal
-# See results/bigmhc_retrospective/BIGMHC_INVESTIGATION_20260510.md
 # ═══════════════════════════════════════════
 print(f"\n{'=' * 60}")
 print("[4] BigMHC (im_val → MANAFEST, IM model, 2-chain)")

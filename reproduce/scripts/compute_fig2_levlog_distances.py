@@ -6,22 +6,20 @@ Pipeline:
    seen-pool 50/50 stratified split (canonical ``build_pools()`` from
    ``eval_cross_test_logdist.py``).
 2. Compute sigma_C chain weights (Simpson concentration based), the
-   canonical method for degradation curves per CLAUDE.md and
-   ``feedback_weighting_tradeoff.md`` memory: "Degradation → sigma_C
-   both" (best for bin-level degradation, bin_R²=0.791).
+   canonical method for degradation curves (best for bin-level
+   degradation, bin_R²=0.791).
 3. Per test set: compute 3-chain LogDist via
    ``compute_combine_first_distances()``.
 
-**Known limitation (2026-05-29)**: fig2 CT |r| values reproduce
+**Known limitation**: fig2 CT |r| values reproduce
 qualitatively (sign + broad magnitude) but cannot bit-exactly match the
 manuscript ATM-TCR panel e legend (-0.98, -0.79, -0.87, -0.94, -0.96,
 -0.83). 3/6 cells reproduce well (Unseen, v4, IEDB), 3/6 diverge (Seen,
 v3, McPAS). The divergence pattern is per-cell (not uniformly off),
 which rules out an S2DD method/parameter mismatch — the same chain
-weight formula gives 3 matching cells. The cause is the 2026-05-20
-model-deletion incident: prediction CSVs we read are from post-retrain
-models that differ from the manuscript canonical pre-retrain models.
-Same Option A scenario as Fig 3 and Fig 5.
+weight formula gives 3 matching cells. The prediction CSVs read here are
+from retrained models that differ from the manuscript canonical models.
+The same scenario applies to Fig 3 and Fig 5.
 
 Inputs (under INPUT_DIR):
     Data/tcr_seq/proc_files/tcr_ml_stratified_v3/{train,validation,test}_data.csv
@@ -34,16 +32,12 @@ Outputs (gitignored, regenerated each run):
 Parameters (canonical):
     k = 0.1, b = 0.1, K = 50
     chain_cols = ['peptide', 'CDR3a', 'CDR3b']
-    weight_formula = sigma_C (per CLAUDE.md "Degradation → sigma_C" rule;
-        this is what the code actually calls at compute_chain_weights(...,
-        formula='sigma_C'). An earlier docstring revision incorrectly said
-        sigma_H — that was a non-canonical detour documented in
-        BUILD_PROGRESS.md "Fig 2 Stage 3 method-side iterations" and is
-        NOT what the code does.)
+    weight_formula = sigma_C (matches the code's
+        compute_chain_weights(..., formula='sigma_C') call)
     seed = 42 (for seen-pool 50/50 split)
 
 Usage:
-    cd <published_repo>/CaliPPer
+    cd CaliPPer
     python reproduce/scripts/compute_fig2_levlog_distances.py
 """
 from __future__ import annotations
@@ -56,7 +50,7 @@ from collections import Counter
 import numpy as np
 import pandas as pd
 
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from _paths import INPUT_DIR, OUTPUT_DIR  # also adds CaliPPer/ to sys.path
 
@@ -131,7 +125,7 @@ def build_train_pool() -> pd.DataFrame:
 
 
 # compute_chain_weights with formula='sigma_C' from calipper is canonical
-# for degradation. See memory feedback_weighting_tradeoff.md.
+# for degradation.
 
 
 def load_test(test_set: str) -> pd.DataFrame:

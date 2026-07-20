@@ -11,8 +11,7 @@ BCR: chains = [Heavy, Light, variant_seq], BCR params K=30, k=0.1, b=0.03
   combine   weighted_max_znorm: argmax_chain(w_scaled*z) -> winner z
   reduce    mean of K=30 smallest combined distances over refs (combine->topK)
 
-Replaces the old `esm2_log_s2dd` CSV row (unaligned multi-chain Euclidean
-pipeline). Outputs:
+Outputs:
   results/fig2_cache/naive_baseline/bcr_cv_fold{0-4}_esm2_s2dd_raw.npy
   results/fig2_cache/bcr_all_esm2_emb.npz   (Heavy+Light+variant embeddings)
 """
@@ -23,7 +22,7 @@ from collections import Counter
 from scipy.stats import pearsonr
 from sklearn.metrics import average_precision_score
 
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, CACHE_DIR, FIG_DIR  # also adds CaliPPer/ to sys.path
 RES = os.path.join(INPUT_DIR, 'results')

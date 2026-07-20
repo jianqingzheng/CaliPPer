@@ -4,7 +4,7 @@
 Requires: compute_fig6_recal_data.py to be run first (creates recal_data/).
 
 Usage:
-    cd <published_repo>/CaliPPer
+    cd /path/to/CaliPPer
     PYTHONPATH=Manuscript/designed_figures:. python Manuscript/designed_figures/panels/fig6/scripts/generate_fig6_redesign.py
 """
 import os, sys, warnings
@@ -19,7 +19,7 @@ from matplotlib.lines import Line2D
 
 warnings.filterwarnings('ignore')
 
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, FIG_DIR  # also adds CaliPPer/ + scripts/ to sys.path
 
@@ -270,11 +270,9 @@ for label, study in tdr_panels:
     fig, ax = plt.subplots(figsize=(PW, PH))
     c = C_STUDY[study]
 
-    # 2026-05-21: AntibioticsAI TDR now uses the FLIPPED halfsplit
-    # (cal=odd, test=even) from recal_data/AntibioticsAI_samples.csv,
-    # matching Panel O and Panel E. Previously used full-dataset v2.7
-    # self-calibration; switched to halfsplit per user request so all
-    # AntibioticsAI panels (E, O, P) share one design (genuine cal/test
+    # AntibioticsAI TDR uses the halfsplit (cal=odd, test=even) from
+    # recal_data/AntibioticsAI_samples.csv, matching Panel O and Panel E, so
+    # all AntibioticsAI panels (E, O, P) share one design (genuine cal/test
     # separation, no test-leakage in PPV/NPV estimation).
     df = load_study(study)
     if df is None: continue

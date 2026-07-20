@@ -9,12 +9,12 @@ Stops at the first non-deepAntigen save_study() call (raises sentinel exception)
 so we don't trigger PanPep/XBCR/BigMHC/AntibioticsAI which have missing inputs.
 
 Usage:
-    cd <published_repo>/CaliPPer
+    cd /path/to/CaliPPer
     python reproduce/scripts/fig6/reproduce_fig6_deepantigen.py
 """
 import os, sys, re
 
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import CACHE_DIR  # also adds CaliPPer/ + scripts/ to sys.path
 

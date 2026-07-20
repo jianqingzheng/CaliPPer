@@ -54,7 +54,7 @@ Outputs:
   recal_data/fig6_prediction_3method.csv    — 10 rows: 5 studies x 2 metrics (S2DD, PAPE, MCBPE errors)
 
 Usage:
-    cd <published_repo>/CaliPPer
+    cd /path/to/CaliPPer
     python Manuscript/designed_figures/panels/fig6/scripts/compute_fig6_panel_c_d.py
 """
 import os, sys, warnings
@@ -64,7 +64,7 @@ from sklearn.metrics import roc_auc_score, average_precision_score
 
 warnings.filterwarnings('ignore')
 
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR  # also adds CaliPPer/ to sys.path
 

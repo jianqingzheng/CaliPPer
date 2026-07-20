@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate Fig 3 BCR CT panels for ALL 5 BCR models using S2DD v2.7.
 
-Protocol (fold4-as-cal design, verified 2026-04-25):
+Protocol (fold4-as-cal design):
   Model:    fold4 model (trained on fold0/1/2/3, 14,355 2-pathogen binding samples)
   Cal:      fold4 test (3,655 samples) — model-specific pred_prob
   Test:     A1-A11 (281), unseen (1,256), flu (1,226) — model-specific pred_prob
@@ -38,7 +38,7 @@ warnings.filterwarnings('ignore')
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _FIG_DIR = os.path.dirname(SCRIPT_DIR)
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, CACHE_DIR, FIG_DIR  # also adds CaliPPer/ to sys.path
 from style_config import apply_publication_style, BCR_MODEL_COLORS, BCR_MODEL_DISPLAY
@@ -59,7 +59,7 @@ apply_publication_style()
 
 # ── Config ──────────────────────────────────────────────────────────────
 RESULTS = os.path.join(INPUT_DIR, 'results')
-# fold4-as-cal pipeline (verified correct by auditor 2026-04-25)
+# fold4-as-cal pipeline
 FOLD4CAL_DIR = os.path.join(RESULTS, 'bcr_bind_ct_fold4cal')
 CACHE_DIR = os.path.join(RESULTS, 'fig3_fig4_bcr_cache')
 os.makedirs(CACHE_DIR, exist_ok=True)

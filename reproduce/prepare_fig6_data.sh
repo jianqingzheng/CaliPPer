@@ -12,7 +12,7 @@
 #            Stage 1 of reproduce_fig6.sh expects. The CSVs ARE committed
 #            to the repo (since they require ~28 GB of model weights to
 #            regenerate via author inference); this avoids needing
-#            `[retired] --record 2` for the 2-command flow.
+#            large model-weight downloads for the 2-command flow.
 #
 #   Stage 1-5: fetches RAW SEQUENCE / SMALL-MOLECULE DATA from authors'
 #            original sources (Nature, Mendeley, Zenodo, GitHub) and stages
@@ -31,7 +31,7 @@
 # (`reproduce_fig6_*.py`, `eval_*_retrospective.py`). This requires model
 # weights for each study; PanPep + deepAntigen weights come with this
 # script's data fetch (Zenodo/GitHub), but BigMHC + XBCR-net inference
-# requires `[retired] --record 1` (~28 GB) for their model weights.
+# requires the authors' original model weights (~28 GB).
 # Without --include-inference, the committed prediction CSVs are used.
 #
 # Studies fetched (5 total):
@@ -99,8 +99,8 @@ echo "Studies to prepare: ${STUDIES[*]}"
 echo "Target: \$INPUT_DIR = $REPRO_DIR/data/input/"
 if [[ $INCLUDE_INFERENCE -eq 1 ]]; then
   echo "Inference: ENABLED (will run author inference scripts after data fetch)"
-  echo "           BigMHC/XBCR-net inference requires model weights from"
-  echo "           # ([retired] retired 2026-06-10 — data committed to reproduce/data/input/) --record 1 (~28 GB)"
+  echo "           BigMHC/XBCR-net inference requires the authors' original"
+  echo "           model weights (~28 GB)"
 else
   echo "Inference: disabled (pass --include-inference to run author inference)"
 fi
@@ -180,7 +180,7 @@ done
 
 # Optionally run author inference scripts to populate the pre-computed
 # *_predictions.csv files that Stage 1 of reproduce_fig6.sh expects.
-# These are usually provided by `[retired] --record 2` (Zenodo deposit).
+# These are otherwise supplied by the committed prediction CSVs (Stage 0).
 if [[ $INCLUDE_INFERENCE -eq 1 ]]; then
   echo "─────────────────────────────────────────────────────"
   echo "[prep] --include-inference: running author inference scripts"
@@ -203,13 +203,13 @@ if [[ $INCLUDE_INFERENCE -eq 1 ]]; then
         echo
         ;;
       bigmhc)
-        echo "[prep] BigMHC: requires model weights from [retired] --record 1 (~28 GB total)."
+        echo "[prep] BigMHC: requires the authors' original model weights (~28 GB total)."
         echo "       To run BigMHC inference manually after weights are staged:"
         echo "         python3 reproduce/scripts/fig6/reproduce_fig6_bigmhc.py"
         echo
         ;;
       xbcr)
-        echo "[prep] XBCR-net: requires model weights from [retired] --record 1 (~28 GB total)."
+        echo "[prep] XBCR-net: requires the authors' original model weights (~28 GB total)."
         echo "       To run XBCR-net inference manually after weights are staged:"
         echo "         python3 reproduce/scripts/fig6/reproduce_panel1_fresh_predictions.py"
         echo "         python3 reproduce/scripts/fig6/reproduce_fig6_xbcr_panel2.py"
@@ -257,7 +257,7 @@ if [[ $PREP_FAILED -eq 0 ]]; then
     echo "To regenerate predictions from scratch by running authors' models, use"
     echo "the --include-inference flag (PanPep + deepAntigen + AntibioticsAI"
     echo "inference run automatically; BigMHC + XBCR-net inference also need"
-    echo "model weights from '# ([retired] retired 2026-06-10 — data committed to reproduce/data/input/) --record 1')."
+    echo "the authors' original model weights)."
   fi
   exit 0
 fi

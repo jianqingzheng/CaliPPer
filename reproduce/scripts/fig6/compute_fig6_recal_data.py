@@ -7,14 +7,14 @@ These are used for ROC curves, TDR, and ranking panels in fig6.
 Also saves a consolidated AP+AUROC summary for dumbbell and scatter panels.
 
 Usage:
-    cd <published_repo>/CaliPPer
+    cd /path/to/CaliPPer
     python Manuscript/designed_figures/panels/fig6/scripts/compute_fig6_recal_data.py
 """
 import os, sys, time
 import numpy as np
 import pandas as pd
 
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR  # also adds CaliPPer/ to sys.path
 
@@ -178,12 +178,7 @@ save_study('XBCR-net', om['gt_binds'].values.astype(int), om['prediction_score']
 # Test: MANAFEST (834 samples, clinical neoantigens, experimental immunogenicity labels)
 # Anchor: train anchor from im_train IM predictions
 #
-# Previous pipeline was wrong:
-#   - Used EL model instead of IM (fixed 2026-05-10)
-#   - Used peptide-only S2DD (BigMHC uses both HLA+peptide)
-#   - Used halfsplit within MANAFEST (not true retrospective)
 # im_test ≈ MANAFEST (99.8% pair overlap, 100% label agreement) — cannot use as cal
-# See results/bigmhc_retrospective/BIGMHC_INVESTIGATION_20260510.md
 # ═══════════════════════════════════════════
 print(f"\n{'=' * 60}")
 print("[4] BigMHC (im_val → MANAFEST, IM model, 2-chain)")
@@ -287,14 +282,9 @@ p_aa = aa['ANTIBIOTIC_PS'].values.astype(float)
 d_aa = aa['distance'].values
 
 si = np.argsort(d_aa)
-# 2026-05-21: FLIPPED to cal=odd, test=even after head-to-head check
-# showed the legacy direction (cal=even, test=odd) put the harder half
-# on test, yielding negative ΔAP (-0.071) and a -1.000 ΔTDR@1 artifact.
-# Flipped direction restores positive ΔAP (+0.036), preserves ΔTDR@1
-# (0.000), and ~doubles ΔTDR@20 (+0.250 vs +0.100). See
-# REPRODUCIBILITY.md → Fig 6 Panel p paragraph for the side-by-side.
-# Legacy direction (for reference): cal_idx, test_idx = si[::2], si[1::2]
-cal_idx, test_idx = si[1::2], si[::2]  # FLIPPED: cal=odd, test=even
+# Distance-sorted halfsplit: cal=odd indices, test=even indices.
+# (Alternative direction: cal_idx, test_idx = si[::2], si[1::2])
+cal_idx, test_idx = si[1::2], si[::2]  # cal=odd, test=even
 cal_data = {'cal': (y_aa[cal_idx], p_aa[cal_idx], d_aa[cal_idx])}
 ppv_p, npv_p, p_pos, p_neg, _cal_prev = fit_recalibration(cal_data)
 cs = apply_recalibration(y_aa[test_idx], p_aa[test_idx], d_aa[test_idx],

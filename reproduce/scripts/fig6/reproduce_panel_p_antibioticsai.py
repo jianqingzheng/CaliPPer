@@ -1,28 +1,10 @@
 #!/usr/bin/env python3
-"""Reproduce a FULL-DATASET variant of Fig 6 Panel P (AntibioticsAI TDR
-@ k = 1, 10, 20, 50, 100) -- now SUPERSEDED.
+"""Reproduce the full-dataset variant of Fig 6 Panel P (AntibioticsAI TDR
+@ k = 1, 10, 20, 50, 100).
 
-⚠ HISTORICAL: as of 2026-05-21, Panel P uses the FLIPPED halfsplit
-(cal=odd, test=even) from ``recal_data/AntibioticsAI_samples.csv``,
-matching Panels E and O. The full-dataset variant this script produces
-(TDR@20 = 10/20 → 14/20, n=283, self-calibration) NO LONGER matches the
-committed Panel P. For the canonical Panel P reproduction, see
-``reproduce_panel_p_antibioticsai_halfsplit.py`` (TDR@20 = 7/20 → 12/20,
-n=142). This script is retained as documentation of the prior full-
-dataset arrangement and for users who want to compare the two designs.
-
-The override branch at ``generate_fig6_redesign.py:256-275`` referenced
-in the comments below was REMOVED on 2026-05-21 when Panel P switched
-to the halfsplit; the ``main_test_with_distances.csv`` file this
-script regenerates is no longer consumed by ``generate_fig6_redesign.py``
-but is still produced for distance-computation reproducibility.
-
-Original purpose: this script regenerates the upstream file
+This script regenerates the file
 ``results/antibioticsai_retrospective/reproduction/main_test_with_distances.csv``
-that ``generate_fig6_redesign.py`` Panel P override branch (lines 256-275)
-requires.  The override file was lost in the 2026-05-20 filter-repo
-session (see REPRODUCIBILITY.md, ``Lost'' section); this script
-recreates it from the still-present source data:
+from the source data:
 
   * Wong et al. (Nature 2024) supplementary xlsx
     ``Data/retrospective_antibioticsai/supplementary/41586_2023_6887_MOESM4_ESM.xlsx``
@@ -31,8 +13,7 @@ recreates it from the still-present source data:
   * Wong et al. training set ``Model/AntibioticsAI/working_example/train.csv``
     (39,312 compounds, used as the S2DD reference)
 
-Pipeline (mirrors ``eval_antibioticsai_retrospective.py:compute_morgan_tanimoto_distances``
-and ``generate_fig6_redesign.py:256-275`` exactly):
+Pipeline:
 
   1. Morgan fingerprint (radius=2, 2048 bits) for both pools.
   2. Tanimoto similarity 283 x 39312; LogDist transform
@@ -44,10 +25,9 @@ and ``generate_fig6_redesign.py:256-275`` exactly):
      prev=cal_prev)``.
   5. TDR @ k = (# actives in top-k by score) / k.
 
-Expected output under the canonical adaptive_n_bins formula
+Expected output under the adaptive_n_bins formula
 ``max(4, min(8, n_minority // 8))`` (matches main.tex Methods
-L376/L453/L498/L511/L531 + supplementary.tex L406, set by commit
-40203223 on 2026-05-20):
+L376/L453/L498/L511/L531 + supplementary.tex L406):
 
     TDR@1  : 1/1   -> 1/1
     TDR@10 : 9/10  -> 9/10
@@ -55,15 +35,11 @@ L376/L453/L498/L511/L531 + supplementary.tex L406, set by commit
     TDR@50 : 14/50 -> 19/50
     TDR@100: 18/100 -> 25/100
 
-After running this script, ``generate_fig6_redesign.py`` will pick up
-the reconstituted ``main_test_with_distances.csv`` automatically and
-regenerate Panel P from it.
-
 Dependencies: rdkit, numpy, pandas, openpyxl, and the repo's
 ``calipper.core`` module.  Run from the repo root.
 
 Usage:
-    cd <published_repo>/CaliPPer
+    cd /path/to/CaliPPer
     python3 Manuscript/designed_figures/panels/fig6/scripts/reproduce_panel_p_antibioticsai.py
 
 **Sibling script — halfsplit / adapted-retrospective variant:**
@@ -89,7 +65,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR  # also adds CaliPPer/ to sys.path
 

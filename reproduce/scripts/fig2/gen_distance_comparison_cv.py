@@ -20,7 +20,7 @@ warnings.filterwarnings('ignore')
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PANEL_DIR = os.path.dirname(SCRIPT_DIR)
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, CACHE_DIR, FIG_DIR  # also adds CaliPPer/ to sys.path
 from style_config import apply_publication_style
@@ -205,14 +205,10 @@ def compute_esm2_cv_dist(test_df, train_df, fold, chains=CHAINS):
     return combined
 
 
-# REMOVED 2026-05-19 — compute_tcrdist_cv_dist (normalized SW-BLOSUM62 on
-# CDR3b only) was NOT TCRdist (paper-reader, Dash et al. 2017): it was the
-# same SW-BLOSUM62 similarity as the BLOSUM column, a misrepresentation.
 # The genuine TCRdist-CDR3 metric is compute_tcrdist_cdr3_naive.py (bsd4 +
 # fixed-gap CDR3 alignment, CDR3a+b), consumed by the canonical panel
-# gen_distance_comparison_cv_with_naive.py. The old function and its
-# tcrdist_cv_fold*_dist.npy caches are archived in git history; this script
-# is retained only for the TCR ESM2 S2DD cache (compute_esm2_cv_dist).
+# gen_distance_comparison_cv_with_naive.py. This script is retained only for
+# the TCR ESM2 S2DD cache (compute_esm2_cv_dist).
 
 
 def plot_boxplot(ax, data, labels, title, colors):
@@ -249,8 +245,8 @@ TCR_MODELS = ['nettcr', 'atm_tcr', 'blosum_rf', 'ergo_ii', 'tcrbert']
 DIST_LABELS = ['Lev-log', 'BLOSUM-log', 'ESM2-log']
 COLORS_4 = ['#1f77b4', '#ff7f0e', '#2ca02c']
 
-# Pre-compute ESM2 distances (model-independent, one per fold). TCRdist
-# removed — genuine TCRdist is compute_tcrdist_cdr3_naive.py.
+# Pre-compute ESM2 distances (model-independent, one per fold). Genuine
+# TCRdist is computed by compute_tcrdist_cdr3_naive.py.
 print("Pre-computing ESM2 distances per fold...")
 esm2_dists = {}  # fold -> distance array
 for fold in range(5):
@@ -334,12 +330,10 @@ plot_boxplot(ax, tcr_data, tcr_labels,
              'Distance comparison\n(TCR CV degradation)', tcr_colors)
 out_dir = os.path.join(PANEL_DIR, 'lev-logtransf')
 os.makedirs(out_dir, exist_ok=True)
-# NOTE: the CANONICAL panel m/n generator is
+# NOTE: the canonical panel m/n generator is
 # gen_distance_comparison_cv_with_naive.py. This standalone script is kept
 # ONLY for its S2DD cache generation (compute_esm2_cv_dist, in the
-# fold loop above). Its plotting section is SUPERSEDED and its BCR ESM2 bar
-# still reads the old unaligned esm2_log_s2dd CSV — so it must NOT write the
-# canonical panel filenames. Output redirected to *_DEPRECATED to prevent
+# fold loop above). Output is redirected to *_DEPRECATED filenames to avoid
 # clobbering the canonical panels.
 out = os.path.join(out_dir, 'fig2_distance_comparison_tcr_cv_DEPRECATED')
 fig.savefig(out + '.pdf', dpi=300, bbox_inches='tight')
@@ -434,7 +428,6 @@ bcr_labels, bcr_data, bcr_colors = bcr_labels_f, bcr_data_f, bcr_colors_f
 fig, ax = plt.subplots(1, 1, figsize=(3.0, 3.0))
 plot_boxplot(ax, bcr_data, bcr_labels,
              'Distance comparison\n(BCR CV degradation)', bcr_colors)
-# SUPERSEDED (see note above): BCR ESM2 here uses the old esm2_log_s2dd CSV.
 # Canonical BCR panel comes from gen_distance_comparison_cv_with_naive.py.
 out = os.path.join(out_dir, 'fig2_distance_comparison_bcr_cv_DEPRECATED')
 fig.savefig(out + '.pdf', dpi=300, bbox_inches='tight')

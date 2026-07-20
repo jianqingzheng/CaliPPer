@@ -23,7 +23,7 @@ warnings.filterwarnings('ignore')
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PANEL_DIR = os.path.dirname(SCRIPT_DIR)
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, CACHE_DIR, FIG_DIR  # also adds CaliPPer/ to sys.path
 from style_config import apply_publication_style
@@ -406,9 +406,7 @@ for fold in range(5):
     # ESM2 naive on Heavy — true single-chain Heavy mean cosine distance
     # over ALL training (multiplicity-weighted, raw: no log/z-norm/top-K/min),
     # matching the TCR ESM2 naive definition. Pre-computed by
-    # compute_bcr_esm2_heavy_naive.py (ESM2 embeddings cached). Replaces the
-    # old `esm2_log_naive` CSV row, which was a multi-chain uniform mean
-    # (Heavy+Light+variant_seq, top-K=50) mislabeled as single-chain.
+    # compute_bcr_esm2_heavy_naive.py (ESM2 embeddings cached).
     cache_f = os.path.join(NAIVE_CACHE, f'bcr_cv_fold{fold}_esm2_naive_raw.npy')
     if os.path.exists(cache_f):
         naive_bcr_dists[('ESM2', fold)] = np.load(cache_f)
@@ -420,8 +418,7 @@ for fold in range(5):
     # ESM2 S2DD — aligned canonical cosine-log pipeline (weighted_max_znorm +
     # sigma_C + top-K=30 + full-pair z-norm; chains Heavy+Light+variant_seq;
     # k=0.1, b=0.03), model-independent. Pre-computed by
-    # compute_bcr_esm2_s2dd.py. Replaces the old `esm2_log_s2dd` CSV row
-    # (unaligned multi-chain Euclidean pipeline).
+    # compute_bcr_esm2_s2dd.py.
     s2dd_f = os.path.join(NAIVE_CACHE, f'bcr_cv_fold{fold}_esm2_s2dd_raw.npy')
     if os.path.exists(s2dd_f):
         s2dd_bcr_dists[('ESM2', fold)] = np.load(s2dd_f)

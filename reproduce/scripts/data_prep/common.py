@@ -3,10 +3,6 @@
 These scripts download author-published data from original sources (Nature
 supplementary, Mendeley datasets, Zenodo, GitHub) and stage it into
 INPUT_DIR so Stage 0 of reproduce_fig6.sh can run from scratch.
-
-The alternative for reviewers who trust CaliPPer's pre-packaged deposit
-is `reproduce/[retired]`, which fetches the same files already
-extracted into a tarball from CaliPPer's own Zenodo record.
 """
 from __future__ import annotations
 import hashlib

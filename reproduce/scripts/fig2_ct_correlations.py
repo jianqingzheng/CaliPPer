@@ -33,15 +33,14 @@ Outputs (under OUTPUT_DIR):
      fig2_ct_correlations_lev.csv; there is no file with the bare name
      fig2_ct_correlations.csv unless a separate ad-hoc run produced it.)
 
-Scope (cross-test only, per the 2026-05-20 CV data gap and user's
-Option A decision; see published_repo/BUILD_PROGRESS.md P4b.systematic.fig2):
+Scope (cross-test only):
     - 5 TCR models: nettcr, atm_tcr, blosum_rf, ergo_ii, tcrbert
     - 6 CT test sets: seen_test, unseen_fold34, v3_combined, v4_combined,
       mcpas, iedb_sars
     - 30 cells total
 
 Usage:
-    cd <published_repo>/CaliPPer
+    cd CaliPPer
     python reproduce/scripts/fig2_ct_correlations.py
 """
 from __future__ import annotations
@@ -53,7 +52,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import pearsonr
 
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from _paths import INPUT_DIR, OUTPUT_DIR  # also adds CaliPPer/ to sys.path
 

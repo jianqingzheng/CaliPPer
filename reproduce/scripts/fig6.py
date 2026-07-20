@@ -29,19 +29,16 @@ compares the regenerated values against the reference within 1e-10
 floating-point tolerance.
 
 **Panels A/B (concept schematic)**: NOT regenerated. These are
-hand-designed Inkscape/Illustrator graphics committed as binary image
-assets in the manuscript repo (``Manuscript/designed_figures/panels/fig6/
-fig6_concept_ab.png``). They are not a CaliPPer reproduction artifact;
-``generate_fig6_redesign.py`` outputs placeholder PNG/PDFs at the
-fig6_a_placeholder and fig6_b_placeholder slots so panel assembly can
-proceed without errors. For final figure assembly, substitute the
-canonical PNG manually if needed.
+hand-designed Inkscape/Illustrator graphics, not a CaliPPer
+reproduction artifact; ``generate_fig6_redesign.py`` outputs
+placeholder PNG/PDFs at the fig6_a_placeholder and fig6_b_placeholder
+slots so panel assembly can proceed without errors. For final figure
+assembly, substitute the canonical PNG manually if needed.
 
 **Stages that produce additional audit files (not in the verify gate)**:
 
   - ``reproduce_fig6_xbcr.py``     (XBCR fresh-inference variant; ΔAUROC
-    +0.154, panel-exact per May 22 acceptance, NOT bit-exact because
-    May-22 fresh-predictions file is permanently lost)
+    +0.154; NOT bit-exact, so it is not part of the verify gate)
 
 Invoke this audit script separately when needed:
     python reproduce/scripts/fig6/reproduce_fig6_xbcr.py

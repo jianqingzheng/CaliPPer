@@ -13,7 +13,7 @@ default `bash reproduce/reproduce_fig2.sh` uses the cached predictions
 1. **Tier-2 verification**: reviewers who want to confirm that retraining
    the models with the same data produces predictions within a tolerable
    range that covers the cached files (per the two-tier reproducibility
-   rule in `BUILD_PROGRESS.md`).
+   rule).
 
 2. **Methodology transparency**: documenting the exact training pipeline
    that produced the published predictions.
@@ -25,8 +25,6 @@ default `bash reproduce/reproduce_fig2.sh` uses the cached predictions
 version drift). The resulting predictions WILL differ from the cached
 predictions to some degree. The Tier-2 acceptance criterion is that the
 spread of retrained outputs covers the cached file as a valid realization.
-See `BUILD_PROGRESS.md` "REPRODUCIBILITY RULE — TWO-TIER MODEL" for the
-authoritative specification.
 
 ## Per-model training/inference scripts
 
@@ -47,7 +45,7 @@ authoritative specification.
 
 ### BCR models (2 canonical scripts — 2-pathogen binding only)
 
-Per `PANEL_MANIFEST.md` "BCR model": **600 AA XBCR-net (retrained 2026-04-27 for flu HA inclusion)** + memory `feedback_bcr_cv_3pathogen_vs_2pathogen.md`: **2-pathogen binding** (SARS-CoV-2 RBD + flu HA pooled). NOT neutralization, NOT SARS-only, NOT 3-pathogen.
+**BCR model**: 600 AA XBCR-net, **2-pathogen binding** (SARS-CoV-2 RBD + flu HA pooled). NOT neutralization, NOT SARS-only, NOT 3-pathogen.
 
 | Script | Purpose | Framework | Used by Fig 3 panels |
 |---|---|---|---|
@@ -55,9 +53,9 @@ Per `PANEL_MANIFEST.md` "BCR model": **600 AA XBCR-net (retrained 2026-04-27 for
 | `eval_bcr_combined_ab_stratified.py` | 2-pathogen combined SARS+flu binding 5-fold CV | TF/Keras (TF 2.4.1) | f (BCR CV pooled scatter) |
 
 **Helper library (NOT a retraining target)**:
-- `eval_bcr_bind_ab_stratified.py` — SARS-only (1-pathogen) script, archived per the 2-pathogen rule. **Restored 2026-06-02 as an importable helper library**: the canonical 2-pathogen scripts (`eval_bcr_bind_ct_fold4cal.py` + `eval_bcr_combined_ab_stratified.py`) import shared helper functions (`prepare_xbcrnet_data`, `train_xbcrnet_fold`, `infer_xbcrnet_fold`, `collect_predictions`) from this file. Module docstring has a prominent ⚠ banner clarifying it is NOT a Fig 2-5 retraining target; do NOT invoke directly. Not in `retrain_fig3_inputs.sh` MODELS registry.
+- `eval_bcr_bind_ab_stratified.py` — SARS-only (1-pathogen) script, used as an importable helper library: the canonical 2-pathogen scripts (`eval_bcr_bind_ct_fold4cal.py` + `eval_bcr_combined_ab_stratified.py`) import shared helper functions (`prepare_xbcrnet_data`, `train_xbcrnet_fold`, `infer_xbcrnet_fold`, `collect_predictions`) from this file. Module docstring has a prominent ⚠ banner clarifying it is NOT a Fig 2-5 retraining target; do NOT invoke directly. Not in `retrain_fig3_inputs.sh` MODELS registry.
 
-**Removed from staging (NOT canonical for Fig 3, not imported by canonical scripts)**:
+**Not canonical for Fig 3 (not imported by canonical scripts)**:
 - `eval_bcr_neu_ab_stratified.py` — neutralization (wrong target; Fig 3 is binding)
 
 Cross-model BCR scripts (DeepAAI, MambaAAI, MINT, RLEAAI) live in the
@@ -87,12 +85,11 @@ environment-specific paths.
 These scripts are **unmodified copies** of the originals in the research
 repo. They have not been patched for CaliPPer-local paths because:
 
-1. The user instruction (2026-05-30) was "no need to retrain the models",
-   so we don't need to make them runnable in the CaliPPer/-only sandbox.
+1. Retraining the models is not required to reproduce the figures, so
+   they don't need to be runnable in the CaliPPer/-only sandbox.
 2. Training data IS committed to CaliPPer at `reproduce/data/input/Data/`
    (TCR ~52 MB + BCR ~125 MB across `tcr_seq/` + `bcr_seq/`), so Tier-2
-   retraining is fully self-contained — no external Zenodo deposit needed
-   (Zenodo retired 2026-06-10).
+   retraining is fully self-contained — no external data download needed.
 3. Reviewers who want to retrain can either: (a) run these scripts from
    within CaliPPer/ after adapting the few hard-coded research-repo paths
    to point at `reproduce/data/input/Data/`, or (b) clone the original

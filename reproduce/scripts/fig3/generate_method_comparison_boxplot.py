@@ -2,14 +2,6 @@
 """Generate Fig 3 panels j (TCR) and k (TCR+BCR): distance-split-subset
 prediction-error comparison and per-distance-bin |error|.
 
-RECONSTRUCTED to match the committed source-of-truth panel images
-(commit b3e07dd7, 2026-05-02). The committed .py at b3e07dd7 was an
-*outdated* dataset-level boxplot generator that did NOT produce the
-committed PNGs — a script/output divergence (the strip+line version that
-made the PNGs was never committed and was overwritten by the older
-boxplot version). Per the "panels are source of truth" rule, this script
-reproduces the committed panel images, not the stale committed code.
-
 Panel j  (fig3_method_comparison_tcr.png) — "TCR CV: distance-split subsets":
   Prediction |error| per distance-split subset for the three methods
   (PAPE, M-CBPE, S2DD/CaliPPer), grouped by metric (AUROC, AP). Jittered
@@ -24,8 +16,7 @@ Panel k  (fig3_method_comparison_bcr.png — legacy filename) —
 
 Data source: pre-computed, committed audit CSVs (no recomputation):
   - TCR: fig4/audit_baseline_comparison_128_blosum-sqrt_results.csv
-         (BLOSUM-sqrt; verified to reproduce the committed b3e07dd7 panel
-          j medians; manuscript rule: TCR = BLOSUM-sqrt S2DD)
+         (BLOSUM-sqrt; manuscript rule: TCR = BLOSUM-sqrt S2DD)
   - BCR: fig4/audit_bcr_baseline_results.csv  (Levenshtein-log)
 Only strategy=='distance', split=='CV' rows are used; panel j shows
 AUROC + AP (the two metrics in the committed source-of-truth panel).
@@ -34,7 +25,7 @@ Output filenames (fig3_method_comparison_{tcr,bcr}.png) are kept so
 assemble_figures.py fig3() (j -> _tcr, k -> _bcr) needs no rewiring.
 
 Usage:
-    cd <published_repo>/CaliPPer
+    cd <repo_root>/CaliPPer
     PYTHONPATH=Manuscript/designed_figures:. python Manuscript/designed_figures/panels/fig3/scripts/generate_method_comparison_boxplot.py
 """
 import os, sys
@@ -46,7 +37,7 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, CACHE_DIR, FIG_DIR  # also adds CaliPPer/ to sys.path
 

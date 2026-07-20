@@ -66,7 +66,7 @@ make install            # creates conda env + installs calipper editable
 
 ## 2. Reproducing Fig 6 — retrospective validation (~25 min, no training)
 
-Fig 6 is the **★ recommended starting point**. It exercises the full S2DD + Bayesian recalibration pipeline end-to-end on 5 published binding-prediction studies (XBCR-net, deepAntigen, AntibioticsAI, BigMHC, PanPep) and reproduces bit-exact from a fresh clone in **two commands**, no GPU and no Zenodo bundle required.
+Fig 6 is the **★ recommended starting point**. It exercises the full S2DD + Bayesian recalibration pipeline end-to-end on 5 published binding-prediction studies (XBCR-net, deepAntigen, AntibioticsAI, BigMHC, PanPep) and reproduces bit-exact from a fresh clone in **two commands**, no GPU required.
 
 ```shell
 bash reproduce/prepare_fig6_data.sh    # fetch raw author data from DOIs + stage 11 cached predictions (~3 min)
@@ -131,7 +131,7 @@ Reproduces manuscript values bit-exact from cached author prediction CSVs **alre
 ```shell
 bash reproduce/reproduce_fig4.sh       # ~30s   → 12/12 panels (highest deposit coverage)
 bash reproduce/reproduce_fig5.sh       # ~230s  → 12/15 panels (3 BCR panels need Tier 2)
-bash reproduce/reproduce_fig2.sh       # ~4s    → 45/60 |r| cells bit-exact (5 ATM-TCR cells affected by 2026-05-20 retrain)
+bash reproduce/reproduce_fig2.sh       # ~4s    → 45/60 |r| cells bit-exact (5 ATM-TCR cells need Tier 2)
 bash reproduce/reproduce_fig3.sh       # ~18min → 5/10 panels (5 panels need Tier 2)
 ```
 
@@ -141,7 +141,7 @@ bash reproduce/reproduce_fig3.sh       # ~18min → 5/10 panels (5 panels need T
 |---|---:|---|
 | `reproduce_fig4.sh` | ~30s | **12/12 panels** (audit CSVs intact) |
 | `reproduce_fig5.sh` | ~230s | **12/15 panels** (3 BCR panels need Tier 2) |
-| `reproduce_fig2.sh` | ~4s | **45/60 |r| cells** (5 ATM-TCR cells affected by 2026-05-20 retrain) |
+| `reproduce_fig2.sh` | ~4s | **45/60 |r| cells** (5 ATM-TCR cells need Tier 2) |
 | `reproduce_fig3.sh` | ~18min | **5/10 panels** (5 panels need Tier 2) |
 
 </div>

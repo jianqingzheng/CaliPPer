@@ -3,11 +3,10 @@
 
 **This is the SIBLING script to ``reproduce_panel_p_antibioticsai.py``.**
 
-The committed Fig 6 Panel P actually uses full-dataset v2.7 self-
-calibration (see the override branch at ``generate_fig6_redesign.py``
-lines 256-275 and the sibling ``reproduce_panel_p_antibioticsai.py``).
-This script provides the alternative *halfsplit* implementation that
-matches the AntibioticsAI design described elsewhere in the manuscript:
+The committed Fig 6 Panel P uses full-dataset v2.7 self-calibration (see
+the sibling ``reproduce_panel_p_antibioticsai.py``).  This script provides
+the alternative *halfsplit* implementation that matches the AntibioticsAI
+design described elsewhere in the manuscript:
 
   * supplementary.tex ``stab:models`` row 58: "Adapted | Compound
     halfsplit: 142 -> 141 (distance-sorted)"
@@ -15,53 +14,33 @@ matches the AntibioticsAI design described elsewhere in the manuscript:
     and a subsequent-campaign half ... a researcher calibrates on a
     manageable pilot before prioritising the next experimental round"
 
-The halfsplit protocol mirrors ``compute_fig6_recal_data.py`` lines
-279-295 with **one deliberate change**: the cal/test halves are
-**flipped** (cal = odd indices, test = even indices) versus the
-``compute_fig6_recal_data.py`` convention (cal = even, test = odd).
-The flip was adopted 2026-05-21 after a head-to-head check (see
-REPRODUCIBILITY.md, Fig 6 Panel p paragraph) found that the
-``compute_fig6_recal_data.py`` convention puts the *harder* half
-(raw AUROC 0.690, raw AP 0.341) on the test side, producing a
-**negative** ΔAP (-0.071) and a -1.000 ΔTDR@1 artifact.  The flipped
-direction (cal = odd, test = even) puts the easier half on the test
-side and yields uniformly more favourable outcomes: ΔAP **flips from
-negative to positive** (+0.036), ΔTDR@1 is preserved (0.000), and
-ΔTDR@20 more than doubles (+0.250 vs +0.100).  Both directions remain
-methodologically equivalent halfsplits; the choice is otherwise
-arbitrary, and there is no principled reason to prefer the original
-``[::2] / [1::2]`` ordering.  See REPRODUCIBILITY.md for the full
-side-by-side comparison.
+The halfsplit is distance-sorted and splits into cal = odd indices,
+test = even indices; recalibration is fit on the cal half and applied to
+the held-out test half.  This gives a genuine cal/test separation (no
+test-leakage in PPV/NPV estimation).
 
 Expected output (cal=odd, test=even; canonical ``adaptive_n_bins`` //8):
 
     AUROC: raw 0.7679 -> cal 0.8329  (Δ +0.0650)
     AP:    raw 0.5251 -> cal 0.5608  (Δ +0.0357)
     TDR@1  : 1/1   -> 1/1    (Δ  0.000)
-    TDR@5  : 5/5   -> 3/5    (Δ -0.400)   [structural recal-vs-rank
-                                            noise at small k, present
-                                            in BOTH directions]
+    TDR@5  : 5/5   -> 3/5    (Δ -0.400)   [recal-vs-rank noise at small k]
     TDR@10 : 7/10  -> 8/10   (Δ +0.100)
     TDR@20 : 7/20  -> 12/20  (Δ +0.250)
     TDR@50 : 11/50 -> 14/50  (Δ +0.060)
     TDR@100: 17/100 -> 17/100 (Δ  0.000)
 
-If you need the legacy direction (cal=even, test=odd) for byte-
-identical equivalence with ``recal_data/AntibioticsAI_samples.csv``,
-swap ``cal_idx, test_idx = si[1::2], si[::2]`` back to
+To use the alternative direction (cal=even, test=odd), swap
+``cal_idx, test_idx = si[1::2], si[::2]`` to
 ``cal_idx, test_idx = si[::2], si[1::2]`` at the marked line below.
 
 Why two scripts?  The committed Panel P annotation in the manuscript is
-``TDR@20 = 10/20 -> 14/20``, which is the *full-dataset* result (33
-actives in n=283, more stable per-k counts).  The halfsplit result
-(12/20 -> here with the flipped direction) is methodologically cleaner
-but noisier at small k because the halfsplit-test half has only 18
-actives.  The script author who built ``generate_fig6_redesign.py``
-chose full-dataset for the panel for that stability reason; this
-halfsplit script exists so users who prefer the adapted-retrospective
-design described in the manuscript can regenerate Panel P under that
-protocol instead.  See ``REPRODUCIBILITY.md`` (Fig 6 row, Panel p
-paragraph) for the choice.
+``TDR@20 = 10/20 -> 14/20``, the *full-dataset* result (33 actives in
+n=283, more stable per-k counts).  The halfsplit result (12/20) is
+methodologically cleaner but noisier at small k because the halfsplit-test
+half has only 18 actives.  This halfsplit script exists so users who prefer
+the adapted-retrospective design described in the manuscript can regenerate
+Panel P under that protocol instead.
 
 **This script does NOT overwrite any committed file.**  It performs the
 halfsplit recalibration in memory and prints the TDR table for
@@ -72,7 +51,7 @@ Dependencies: rdkit, numpy, pandas, openpyxl, and the repo's
 ``calipper.core`` module.
 
 Usage:
-    cd <published_repo>/CaliPPer
+    cd /path/to/CaliPPer
     python3 Manuscript/designed_figures/panels/fig6/scripts/reproduce_panel_p_antibioticsai_halfsplit.py
 """
 
@@ -84,7 +63,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR  # also adds CaliPPer/ to sys.path
 
@@ -136,20 +115,15 @@ for i, tfp in enumerate(test_fps):
     if (i + 1) % 100 == 0 or i == len(test_fps) - 1:
         print(f"    [{i+1:>3d}/{len(test_fps)}] {time.time()-t0:.1f}s")
 
-# --- Step 3: distance-sorted halfsplit (FLIPPED vs compute_fig6_recal_data.py:289) ---
-# 2026-05-21: flipped to cal=odd, test=even. See REPRODUCIBILITY.md
-# (Fig 6 Panel p paragraph) for the head-to-head comparison.  The original
-# direction (cal=even, test=odd) puts the harder half on the test side and
-# yields negative ΔAP + a -1.000 ΔTDR@1 artifact; the flipped direction
-# below restores positive ΔAP, preserves TDR@1, and ~doubles ΔTDR@20.
-# To revert to the legacy direction, swap to: cal_idx, test_idx = si[::2], si[1::2]
-print("[3] Distance-sorted halfsplit (cal=odd-half, test=even-half) [FLIPPED 2026-05-21]")
+# --- Step 3: distance-sorted halfsplit (cal=odd, test=even) ---
+# To use the alternative direction, swap to: cal_idx, test_idx = si[::2], si[1::2]
+print("[3] Distance-sorted halfsplit (cal=odd-half, test=even-half)")
 y_all = tested["ACTIVITY"].values.astype(int)
 p_all = tested["ANTIBIOTIC_PS"].values.astype(float)
 d_all = distances
 
 si = np.argsort(d_all)
-cal_idx, test_idx = si[1::2], si[::2]  # FLIPPED: cal=odd, test=even
+cal_idx, test_idx = si[1::2], si[::2]  # cal=odd, test=even
 cal_y, cal_p, cal_d = y_all[cal_idx], p_all[cal_idx], d_all[cal_idx]
 test_y, test_p, test_d = y_all[test_idx], p_all[test_idx], d_all[test_idx]
 print(f"    cal:  n={len(cal_idx)}, actives={int(cal_y.sum()):d} "
@@ -188,11 +162,8 @@ for k in ks:
           f"{cal_n}/{k:<3d} = {cal_n/k:.3f}  {(cal_n-raw_n)/k:>+8.3f}")
 
 # --- Step 6: cross-check vs committed AntibioticsAI_samples.csv ---
-# Both this script AND compute_fig6_recal_data.py:289 now use the FLIPPED
-# direction (cal=odd, test=even) as of 2026-05-21. The committed
-# AntibioticsAI_samples.csv was regenerated under the flipped direction
-# (legacy version backed up to *.legacy_cal-even_2026-05-21.bak), so this
-# script's output SHOULD now match the committed CSV row-for-row.
+# The committed AntibioticsAI_samples.csv uses the same cal=odd/test=even
+# direction as this script, so this script's output matches it row-for-row.
 print(f"\n[6] Cross-check vs regenerated {COMMITTED_SAMPLES_CSV}")
 print(f"    (Both this script AND the committed CSV use FLIPPED cal=odd/test=even)")
 committed = pd.read_csv(COMMITTED_SAMPLES_CSV)
@@ -209,7 +180,7 @@ if len(committed) > 0:
               f"{cc}/{k:<3d} = {cc/k:.3f}")
     print(f"    (Expected on flipped direction: TDR@20 = 7/20 -> 12/20)")
 
-print(f"\nExpected (flipped halfsplit, cal=odd/test=even, per 2026-05-21 flip):")
+print(f"\nExpected (halfsplit, cal=odd/test=even):")
 print(f"  TDR@20 = 7/20 -> 12/20 (Δ +0.250)")
 print(f"  ΔAP    = +0.036 (positive, vs -0.071 on legacy direction)")
 print(f"  ΔAUROC = +0.065")

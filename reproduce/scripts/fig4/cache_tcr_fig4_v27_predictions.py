@@ -11,7 +11,6 @@ Prediction protocols:
 
 S2DD distance strategy: uniform+znorm_sum (per_epitope strategy).
   Uniform wins all 6 TCR per-epitope cells (+0.007 to +0.049 r vs sigma_C).
-  See `Manuscript/scripts_manuscript/audit_uniform_vs_sigmaC.py` in the research repo for verification (not bundled in this public release).
 
 Uses predict_subset_metric from calipper.core (v2.7).
 """
@@ -20,7 +19,7 @@ import numpy as np
 import pandas as pd
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, CACHE_DIR, FIG_DIR  # also adds CaliPPer/ to sys.path
 from calipper.general_evaluator import safe_metric
@@ -70,9 +69,9 @@ def _split_by_distance(distances, n_sub=N_SUB):
 def _split_by_epitope(epitopes, distances, min_per_epitope=128):
     """Split by individual epitope identity. Each subset = one unique epitope.
 
-    Only includes epitopes with >= min_per_epitope samples.
-    Updated 2026-04-27: threshold lowered from 256 to 128 so that epitope-bin
-    curve fitting (≥4 regression points) fires in all CV folds.
+    Only includes epitopes with >= min_per_epitope samples. The default
+    threshold of 128 ensures epitope-bin curve fitting (≥4 regression points)
+    fires in all CV folds.
     """
     result = {}
     unique_eps = pd.Series(epitopes).value_counts()

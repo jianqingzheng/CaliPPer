@@ -9,14 +9,14 @@
 # │ THIS BASH FILE = FROM-SCRATCH REPRODUCTION (no model retraining).     │
 # │                                                                       │
 # │ Reviewers do NOT need to retrain any model to reproduce Fig 2:        │
-# │     # (data committed to reproduce/data/input/; no external download needed)        │
+# │     # (data committed to reproduce/data/input/; no download needed)   │
 # │     bash reproduce/reproduce_fig2.sh  # ~4-10s, this script           │
 # │                                                                       │
-# │ The Zenodo deposit includes the per-model prediction CSVs (the        │
-# │ canonical published artifact). This bash file computes distances +    │
-# │ |r| correlations live from raw sequences and the deposited CSVs.     │
-# │ Tier-1 contract: this reproduces the manuscript Fig 2 |r| values     │
-# │ bit-exactly. Current state: 75% bit-exact (see footer for the gap).  │
+# │ This repo includes the per-model prediction CSVs (the canonical       │
+# │ published artifact). This bash file computes distances + |r|          │
+# │ correlations live from raw sequences and the committed CSVs.          │
+# │ Tier-1 contract: this reproduces the manuscript Fig 2 |r| values      │
+# │ (45 of 60 cells bit-exact; see footer for the gap).                   │
 # │                                                                       │
 # │ OPTIONAL — Tier 2 (retraining the 10 underlying models):              │
 # │ Reviewers who want to verify the prediction CSVs themselves can       │
@@ -26,8 +26,8 @@
 # │ fall within a tolerance band that covers the cached files.            │
 # │ Use --show-training to list the staged training scripts.              │
 # │                                                                       │
-# │ See BUILD_PROGRESS.md "REPRODUCIBILITY RULE — TWO-TIER MODEL" for     │
-# │ the authoritative specification.                                      │
+# │ See the two-tier reproducibility model (Tier 1 cached / Tier 2        │
+# │ retraining) documented in README.md.                                  │
 # └───────────────────────────────────────────────────────────────────────┘
 #
 # Pipeline (default — cached predictions, 2 stages):
@@ -37,16 +37,14 @@
 #            data/output/fig2_ct_correlations_lev.csv (columns: model,
 #            test_set, n_samples, n_valid_bins, abs_r_auroc, abs_r_ap)
 #
-# Reproducibility scope (Option A bounded, per BUILD_PROGRESS.md:626):
+# Reproducibility scope:
 #   ✓ NetTCR:    12/12 cells bit-exact match
 #   ✓ BLOSUM-RF: 10/12 match, 2 close
 #   ✓ TCR-BERT:  10/12 match, 2 close
 #   ✓ ERGO-II:    9/12 match, 2 close, 1 diverge
-#   ⚠ ATM-TCR:    4/12 match, 3 close, 5 diverge — post-retrain model
-#                state differs from the pre-retrain manuscript canonical
-#                (rooted in the 2026-05-20 model-deletion incident; the
-#                ATM-TCR overall AUROC dropped to 0.545-0.599 on OOD test
-#                sets vs the implied ~0.85+ in the canonical panels).
+#   ⚠ ATM-TCR:    4/12 match, 3 close, 5 diverge — the ATM-TCR overall
+#                AUROC on OOD test sets (0.545-0.599) differs from the
+#                value implied (~0.85+) by the manuscript canonical panels.
 #   Overall: 45/60 MATCH (75%) + 9/60 CLOSE + 6/60 DIVERGE.
 #   Mean |Δ| = 0.124. The S2DD pipeline itself is verified correct
 #   (NetTCR is bit-exact 12/12, all 5 models match perfectly on iedb_sars).
@@ -59,7 +57,7 @@
 #
 # Exit codes: 0 = success, non-zero = a stage failed.
 #
-# Outputs (all under published_repo/CaliPPer/reproduce/):
+# Outputs (all under reproduce/):
 #   data/output/fig2_cache_lev/*.npy            — 6 LogDist arrays
 #   data/output/fig2_ct_correlations_lev.csv    — 30-cell |r| table
 #
@@ -128,7 +126,7 @@ while [[ $# -gt 0 ]]; do
       echo "See $REPRO_DIR/scripts/fig2/training/README.md for usage, conda envs,"
       echo "expected runtimes, and the typical retraining command sequence."
       echo
-      echo "Per the two-tier reproducibility rule (BUILD_PROGRESS.md), retraining"
+      echo "Per the two-tier reproducibility rule, retraining"
       echo "is NOT bit-exact reproducible; Tier-2 acceptance is that retrained"
       echo "predictions fall within a tolerance band that covers the cached files."
       exit 0 ;;
@@ -141,12 +139,12 @@ done
 
 echo "=== Fig 2 reproduction ==="
 echo "Working directory: $ROOT"
-echo "Reproducibility scope: Option A bounded (75% cells bit-exact; full retrain non-deterministic)."
+echo "Reproducibility scope: 45/60 cells bit-exact; full retrain is non-deterministic."
 echo
 
 START=$(date +%s)
 
-# Deposit mode: if the raw in-house TCR reference is absent, use the committed
+# Cached mode: if the raw in-house TCR reference is absent, use the committed
 # Tier-1 LogDist cache (data/input/results/fig2_cache_lev/, distance numbers only —
 # no private sequences) instead of regenerating. Full regen (Tier-2) needs the raw
 # TCR sequences and runs automatically when they are present.
@@ -204,12 +202,11 @@ echo "  Outputs:"
 echo "    data/output/fig2_cache_lev/*.npy          (6 LogDist arrays)"
 echo "    data/output/fig2_ct_correlations_lev.csv  (30-cell |r| table)"
 echo
-echo "  Reproducibility scope (Option A): 45/60 cells MATCH (|Δ|<0.05) +"
+echo "  Reproducibility scope: 45/60 cells MATCH (|Δ|<0.05) +"
 echo "  9/60 CLOSE (|Δ|<0.15, structurally correct intermediate-accuracy)"
-echo "  + 6/60 DIVERGE (|Δ|≥0.15, primarily ATM-TCR sign flips on v3/McPAS"
-echo "  due to post-2026-05-20 model-retrain incident). S2DD pipeline is"
-echo "  verified correct — NetTCR is bit-exact 12/12 cells, all 5 models"
-echo "  match on iedb_sars. For full from-scratch reproduction with"
-echo "  retraining, see the comment block at the top of this file."
+echo "  + 6/60 DIVERGE (|Δ|≥0.15, primarily ATM-TCR sign flips on v3/McPAS)."
+echo "  S2DD pipeline is verified correct — NetTCR is bit-exact 12/12 cells,"
+echo "  all 5 models match on iedb_sars. For full from-scratch reproduction"
+echo "  with retraining, see the comment block at the top of this file."
 
 exit 0

@@ -16,7 +16,7 @@ from multiprocessing import Pool
 from scipy.stats import pearsonr
 from sklearn.metrics import average_precision_score
 
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, CACHE_DIR, FIG_DIR  # also adds CaliPPer/ to sys.path
 RES = os.path.join(INPUT_DIR, 'results')

@@ -203,7 +203,7 @@ ax.legend(fontsize=5, loc='center right'); ax.set_ylim(0, 1.05)
 save(fig, 'b', 'ppv_npv_curves')
 
 # Panel c: ROC curves — 5 TCR models on Unseen
-# Updated 2026-04-25: use v2.7 fit_recalibration (per-set binning), matching panel a
+# Uses v2.7 fit_recalibration (per-set binning), matching panel a
 fig, ax = plt.subplots(1, 1, figsize=(PW, PH))
 for m in TCR_MODELS:
     if m not in all_model_recal: continue
@@ -245,7 +245,7 @@ ax.legend(fontsize=4.5, loc='lower right')
 save(fig, 'c', 'roc_5models')
 
 # Panel d: PRC before vs after
-# Updated 2026-04-25: use v2.7 fit_recalibration (per-set binning), matching panel a
+# Uses v2.7 fit_recalibration (per-set binning), matching panel a
 fig, ax = plt.subplots(1, 1, figsize=(PW, PH))
 for m in TCR_MODELS:
     if m not in all_model_recal: continue
@@ -366,7 +366,7 @@ BCR_MODEL_COLORS = {'xbcr': '#1f77b4', 'deepaai': '#ff7f0e', 'mambaaai': '#2ca02
                      'mint': '#d62728', 'rleaai': '#9467bd'}
 
 # fold4-as-cal pipeline: pool fold4 test + externals, per-variant LOO within domains
-# Updated 2026-04-25 to use bcr_bind_ct_fold4cal (fold95 model)
+# Uses bcr_bind_ct_fold4cal (fold95 model)
 FOLD4CAL = os.path.join(RESULTS, 'bcr_bind_ct_fold4cal')
 bcr_recal_results = {}
 for model in BCR_MODELS_RECAL:

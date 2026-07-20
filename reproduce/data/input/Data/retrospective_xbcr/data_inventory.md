@@ -1,10 +1,5 @@
-> **⚠ VALUES UPDATED 2026-05-01:** Some ΔAUROC values below are superseded.
-> Definitive: XBCR +0.135, deepAntigen +0.120, AntibioticsAI +0.106, PanPep +0.080, BigMHC +0.055.
-> Source: `results/retrospective_recalibration_definitive.csv`
-
 # XBCR-net Retrospective Study — Data Inventory
 
-**Date:** 2026-04-19
 **Source:** Cell Research 2022 (DOI: 10.1038/s41422-022-00727-6)
 **Repo:** https://github.com/jianqingzheng/XBCR-net (cloned to `Data/retrospective_xbcr/xbcr_original_repo/`)
 **Supplementary:** Downloaded from Nature static content
@@ -86,7 +81,7 @@
 
 ---
 
-## Processing Status (2026-04-19)
+## Processing Status
 
 - [x] Panel 1: Extracted + inference complete (1293/1483 matched)
 - [x] Panel 2: Extracted with sequences + predictions + ground truth

@@ -2,13 +2,9 @@
 """Re-derive `distance_cache_panel1.npz` (XBCR-net Panel 1 S2DD distances)
 from raw inputs inside CaliPPer/.
 
-✓ BIT-EXACT (verified 2026-06-04 by `reproduce_fig6.sh` Stage 0a):
-    Regenerates `distance_cache_panel1.npz` from raw inputs with max
-    |Δ| = 0.000000e+00 across all 1003 elements vs the staged copy.
-    The historical 2026-05-30 "0.086 max |Δ|" note was based on an
-    earlier transient state; the current implementation reproduces
-    perfectly when invoked through the bash pipeline (clean INPUT_DIR
-    + cache cleared).
+BIT-EXACT: regenerates `distance_cache_panel1.npz` from raw inputs with
+    max |Δ| = 0 across all 1003 elements vs the staged copy, via
+    `reproduce_fig6.sh` Stage 0a (clean INPUT_DIR + cache cleared).
 
     Used by `reproduce_fig6.sh` Stage 0a: writes
     `INPUT_DIR/results/xbcr_retrospective/distance_cache_panel1.npz`
@@ -32,16 +28,15 @@ Output (gitignored, regenerated each run):
 
 Verification target:
     INPUT_DIR/results/xbcr_retrospective/distance_cache_panel1.npz
-        - the cached version from research repo (staged in P4b.6 Stage 2)
+        - the staged cached version
 
-Parameters (canonical fig6 XBCR settings per BUILD_PROGRESS and
-reproduce_fig6_xbcr.py):
+Parameters (canonical fig6 XBCR settings, same as reproduce_fig6_xbcr.py):
     chain_cols = ['Heavy', 'Light', 'variant_seq']
     k=0.1, b=0.03, K=30
     weight_formula = sigma_C
 
 Usage:
-    cd <published_repo>/CaliPPer
+    cd /path/to/CaliPPer
     python reproduce/scripts/fig6/compute_xbcr_panel1_distances.py
 """
 from __future__ import annotations
@@ -52,7 +47,7 @@ import sys
 import numpy as np
 import pandas as pd
 
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR  # also adds CaliPPer/ to sys.path
 

@@ -4,7 +4,7 @@
 Generates one panel per model x domain:
   fig5_scatter_marginals_{tcr_ct|tcr_cv|bcr_ct|bcr_cv}_{model}.pdf
 
-Uses v2.7 fit_recalibration/apply_recalibration from General_Eval/s2dd.py.
+Uses v2.7 fit_recalibration/apply_recalibration from calipper.core.
 
 TCR CT: v3+v4 calibration -> 4 test sets pooled per model
 TCR CV: within-fold half-split (5 folds pooled)
@@ -22,7 +22,7 @@ from scipy.stats import gaussian_kde, spearmanr
 warnings.filterwarnings('ignore')
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, CACHE_DIR, FIG_DIR  # also adds CaliPPer/ to sys.path
 _FIG_DIR = os.path.join(FIG_DIR, 'fig5')

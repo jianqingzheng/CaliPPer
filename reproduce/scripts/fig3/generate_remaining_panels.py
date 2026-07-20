@@ -21,7 +21,7 @@ warnings.filterwarnings('ignore')
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PANEL_DIR = os.path.dirname(SCRIPT_DIR)  # panels/fig3/
 DESIGNED_DIR = os.path.dirname(os.path.dirname(PANEL_DIR))  # designed_figures/
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, CACHE_DIR, FIG_DIR  # also adds CaliPPer/ to sys.path
 sys.path.insert(0, DESIGNED_DIR)

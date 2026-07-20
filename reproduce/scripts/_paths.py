@@ -1,13 +1,13 @@
 """Self-contained path anchors for reproduce/ scripts.
 
-Resolves all data/output/cache/figure paths to locations inside
-``published_repo/CaliPPer/``. Also adds ``CaliPPer/`` to ``sys.path`` so
+Resolves all data/output/cache/figure paths to locations inside the
+``CaliPPer/`` package root. Also adds ``CaliPPer/`` to ``sys.path`` so
 that ``from calipper.*``, ``from PAPE.*``, and ``from MCBPE.*`` imports
 work regardless of how the script is invoked (direct python, reproduce.sh,
 or pytest).
 
-See BUILD_PLAN.md sections 1 and 5.2 for the self-containment rule and
-the violation taxonomy this helper exists to prevent.
+This helper exists to keep every reproduce/ path self-contained inside
+the repo, so scripts never depend on absolute paths or external layout.
 
 Usage from a script under ``reproduce/scripts/figN/``::
 

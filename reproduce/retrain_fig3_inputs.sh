@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # retrain_fig3_inputs.sh — Tier-2 retraining for Fig 3 missing inputs.
 #
-# Per the two-tier reproducibility rule (BUILD_PROGRESS.md), Fig 3 has
-# 7 of 10 manuscript panels that require predictions NOT included in the
-# Zenodo deposit (the per-model TCR/BCR CV fold prediction CSVs and BCR
-# CT cal_predictions.csv were lost in the 2026-05-20 incident).
+# Per the two-tier reproducibility rule, Fig 3 has
+# 7 of 10 manuscript panels that require predictions NOT committed in
+# this repo (the per-model TCR/BCR CV fold prediction CSVs and BCR
+# CT cal_predictions.csv require Tier-2 retraining to regenerate).
 #
 # This bash file orchestrates the retraining sequence that a reviewer
 # would run to regenerate those missing inputs from scratch. It uses the
@@ -45,7 +45,7 @@
 # default — promotion is opt-in only).
 #
 # Standard reviewer workflow with --promote (single-shot full reproduction):
-#   # ([retired] retired 2026-06-10 — data committed to reproduce/data/input/)
+#   # (input data is committed in this repo)
 #   bash reproduce/retrain_fig3_inputs.sh --all --promote   # ~11-15 GPU-hours (TCR ~5-6 + BCR ~6-9)
 #   bash reproduce/reproduce_fig2.sh                         # all 60 cells
 #   bash reproduce/reproduce_fig3.sh                         # all 9 regenerable panels
@@ -55,7 +55,7 @@
 #   reproduce/data/output/retrain_fig3/{model}/...
 #
 # IMPORTANT: this script writes ONLY to OUTPUT_DIR/retrain_fig3/. It NEVER
-# touches the cached Zenodo prediction CSVs at INPUT_DIR/results/. The
+# touches the cached prediction CSVs at INPUT_DIR/results/. The
 # reviewer's cached canonical state is preserved.
 #
 # After retraining completes, a reviewer who wants to use the retrained
@@ -86,11 +86,10 @@ OUT_DIR="$REPRO_DIR/data/output/retrain_fig3"
 
 # Model registry: name → (script | conda_env | runtime | extra_args | description)
 #
-# Canonical CLI args verified against CLAUDE.md "Running Evaluations" + script
-# argparse defaults (all defaults already match CLAUDE.md, EXCEPT:
+# Canonical CLI args match each script's argparse defaults, EXCEPT:
 #   - eval_bcr_bind_ab_stratified.py REQUIRES --no-pretrain (script defaults to
 #     --restore_pretrain=1 which leaks the full xbcr_train dataset via the
-#     pretrained initialization — see CLAUDE.md "BCR Binding Pipeline" §1184).
+#     pretrained initialization).
 #
 # Extra args (5th field, '|'-separated): supplied to the training script
 # after the auto-injected --data-dir and --output-dir args.
@@ -105,20 +104,20 @@ declare -A MODELS=(
   [ergo2_ct]="eval_ergo2_cross_test_logdist.py|ERGO_II||GPU,10min|ERGO-II cross-test (--epochs 50 default)"
   [tcrbert_cv]="eval_tcrbert_cv_logdist.py|TCR_BERT||GPU,20min|TCR-BERT 5-fold CV (PyTorch+transformers)"
   [tcrbert_ct]="eval_tcrbert_cross_test_logdist.py|TCR_BERT||GPU,5min|TCR-BERT cross-test"
-  # Canonical BCR scripts per PANEL_MANIFEST + memory feedback_bcr_cv_3pathogen_vs_2pathogen.md:
+  # Canonical BCR scripts per PANEL_MANIFEST:
   # Fig 3 BCR uses 2-PATHOGEN BINDING (SARS-CoV-2 RBD + flu HA), NOT:
-  #   ✗ SARS-only binding (eval_bcr_bind_ab_stratified.py — archived as 1-pathogen)
+  #   ✗ SARS-only binding (eval_bcr_bind_ab_stratified.py — 1-pathogen only)
   #   ✗ Neutralization (eval_bcr_neu_ab_stratified.py — wrong target)
-  #   ✗ 3-pathogen (archived per BCR_CV memory rule)
+  #   ✗ 3-pathogen variant
   # bcr_ct_fold4cal: eval_bcr_bind_ct_fold4cal.py hardcodes restore_pretrain=0
   # inside the script (line 192) — no CLI flag needed; cleanliness guaranteed.
   [bcr_ct_fold4cal]="eval_bcr_bind_ct_fold4cal.py|XBCR-net||GPU,2-3h|BCR CT 2-pathogen fold4-as-cal (canonical fig3 panels c/g/i; 5 BCR models: xbcr/deepaai/mambaaai/mint/rleaai; restore_pretrain=0 hardcoded)"
   # bcr_cv_combined: eval_bcr_combined_ab_stratified.py argparse default is
   # --no-pretrain=False (= restore_pretrain=1 → SARS-pretrained weight leak).
-  # Per CLAUDE.md L1184 the binding pipeline REQUIRES --no-pretrain to avoid
-  # leakage; the same rule applies to the SARS+flu combined variant because
-  # the pretrained weights came from full SARS xbcr_train. Pass --no-pretrain.
-  [bcr_cv_combined]="eval_bcr_combined_ab_stratified.py|XBCR-net|--no-pretrain|GPU,4-6h|BCR CV 2-pathogen combined SARS+flu binding (canonical fig3 panel f; --no-pretrain REQUIRED per CLAUDE.md L1184 to avoid SARS-pretrained leakage)"
+  # The binding pipeline REQUIRES --no-pretrain to avoid leakage; the same
+  # applies to the SARS+flu combined variant because the pretrained weights
+  # came from full SARS xbcr_train. Pass --no-pretrain.
+  [bcr_cv_combined]="eval_bcr_combined_ab_stratified.py|XBCR-net|--no-pretrain|GPU,4-6h|BCR CV 2-pathogen combined SARS+flu binding (canonical fig3 panel f; --no-pretrain REQUIRED to avoid SARS-pretrained leakage)"
 )
 
 # Models that accept --data-dir / --output-dir CLI args (TCR pipeline scripts).
@@ -235,7 +234,7 @@ done
 
 # --promote: auto-copy retrained outputs into INPUT_DIR so reproduce_figN.sh
 # can read them. NEVER invoked unless reviewer passes the flag explicitly
-# (preserves the user's "don't overwrite" rule by requiring explicit opt-in).
+# (opt-in only — existing INPUT_DIR data is never overwritten automatically).
 promote_model() {
   local key="$1"
   local src="$OUT_DIR/$key"

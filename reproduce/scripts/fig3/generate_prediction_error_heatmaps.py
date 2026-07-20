@@ -24,7 +24,7 @@ warnings.filterwarnings('ignore')
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _FIG_DIR = os.path.dirname(SCRIPT_DIR)
 DESIGNED_DIR = os.path.dirname(os.path.dirname(_FIG_DIR))
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, CACHE_DIR, FIG_DIR  # also adds CaliPPer/ to sys.path
 sys.path.insert(0, DESIGNED_DIR)
@@ -526,7 +526,7 @@ def compute_bcr_cv():
 
 
 # ─────────────────────────────────────────────────────────────────
-# BCR CT: fold4-as-cal → dataset-level prediction (updated 2026-04-25)
+# BCR CT: fold4-as-cal → dataset-level prediction
 # ─────────────────────────────────────────────────────────────────
 
 def compute_bcr_ct():

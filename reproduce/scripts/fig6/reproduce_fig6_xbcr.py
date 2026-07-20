@@ -5,18 +5,18 @@ committed to reproduce/data/input/) and writes outputs to
 reproduce/data/output/recal_data/ (also gitignored). Does not modify
 any committed file.
 
-Required input (must be staged by [retired]):
+Required input:
   reproduce/data/input/results/xbcr_retrospective/fresh_inference/panel1_test_with_fresh_predictions.csv
 
 Usage:
-    cd <published_repo>/CaliPPer
+    cd /path/to/CaliPPer
     python reproduce/scripts/fig6/reproduce_fig6_xbcr.py
 """
 import os, sys
 import numpy as np
 import pandas as pd
 
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR  # also adds CaliPPer/ to sys.path
 
@@ -27,7 +27,7 @@ from calipper.general_evaluator import safe_metric
 # ── Settings (copied from eval_xbcr_panel2_omicron.py + compute_fig6_recal_data.py) ──
 CHAIN_COLS = ['Heavy', 'Light', 'variant_seq']
 k, b, K = 0.1, 0.03, 30
-PREVALENCE_PRIOR = 0.5  # corrected per fig6 comment "simulated negatives inflate cal prevalence"
+PREVALENCE_PRIOR = 0.5  # simulated negatives inflate cal prevalence
 
 OMICRON_RBD = {
     'omicron': "RVQPTESIVRFPNITNLCPFDEVFNATRFASVYAWNRKRISNCVADYSVLYNLAPFFTFKCYGVSPTKLNDLCFTNVYADSFVIRGDEVRQIAPGQTGNIADYNYKLPDDFTGCVIAWNSNKLDSKVSGNYNYLYRLFRKSNLKPFERDISTEIYQAGNKPCNGVAGFNCYFPLRSYSFRPTYGVGHQPYRVVVLSFELLHAPATVCGPKKSTNLVKNKCVNF",

@@ -15,8 +15,7 @@ import numpy as np
 import pandas as pd
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-# scripts/ → fig2/ → panels/ → designed_figures/ → Manuscript/ → general_eval/
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, CACHE_DIR, FIG_DIR  # also adds CaliPPer/ to sys.path
 from calipper.general_evaluator import safe_metric
@@ -102,9 +101,8 @@ print(f"CV caching done ({time.time()-t0:.0f}s)\n")
 # ═══════════════════════════════════════════
 # 2. CT degradation bins (XBCR-net per-source from combined_bind_ab_cv)
 # ═══════════════════════════════════════════
-# CORRECTED 2026-04-23: Use the SAME 2-pathogen binding model (combined_bind_ab_cv)
-# for CT, split by source column. The previous version incorrectly used
-# neu_archive_crosstest_f1 which is a DIFFERENT model (neutralization archive).
+# Use the SAME 2-pathogen binding model (combined_bind_ab_cv)
+# for CT, split by source column.
 # The combined_bind_ab_cv test data contains per-source labels (A1-A11, unseen,
 # guoyu, BNT162b2, flu, xbcr_train) that serve as independent test subsets.
 print("=== Caching CT degradation bins (XBCR-net, per-source from combined_bind_ab_cv) ===")

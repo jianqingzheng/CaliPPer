@@ -12,11 +12,6 @@ Plus pooled panels:
 
 v2.7 protocol: dual curve fitting (exp-decay + right-Gaussian) + adaptive bin_num.
 LOO across 6 test sets (seen, unseen, v3, v4, McPAS, IEDB-SARS).
-
-Note: a prior version of this script printed a v2.6-vs-v2.7 diagnostic
-comparison (reading s2dd_v2_6_prediction_results.csv). That block was
-removed on 2026-06-01 per user instruction "everything should be v2.7".
-The script now uses v2.7 exclusively.
 """
 import os, sys, warnings, json
 import numpy as np
@@ -29,7 +24,7 @@ warnings.filterwarnings('ignore')
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _FIG_DIR = os.path.dirname(SCRIPT_DIR)  # fig3/
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, CACHE_DIR, FIG_DIR  # also adds CaliPPer/ to sys.path
 from style_config import apply_publication_style, MODEL_COLORS, MODEL_DISPLAY
@@ -406,14 +401,5 @@ fig.savefig(out + '.pdf', dpi=300, bbox_inches='tight')
 fig.savefig(out + '.png', dpi=200, bbox_inches='tight')
 plt.close(fig)
 print(f'  Pooled R={r:.3f}, MAE={mae:.3f}, n={len(all_p)}')
-
-# v2.6-vs-v2.7 diagnostic comparison block REMOVED 2026-06-01:
-# Per user instruction "everything should be v2.7", the production pipeline
-# uses v2.7 only. The legacy v2.6 comparison printout was a development-time
-# diagnostic that read s2dd_v2_6_prediction_results.csv (a frozen archived
-# baseline, not regenerable from the current code) and emitted stdout-only
-# stats — NO panel artifact, NO impact on Fig 3 manuscript content. The
-# entire block (and its dependency on the missing v2.6 baseline file) is
-# removed. v2.7 results are the only canonical source.
 
 print(f"\nfig3 total: {len([f for f in os.listdir(PANEL_DIR) if f.endswith('.pdf')])} panels")

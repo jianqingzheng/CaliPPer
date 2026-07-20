@@ -6,10 +6,10 @@ Fig 5's scripts (`gen_fig5_lev_vs_blosum_recal.py`, `generate_fig5_new_panels.py
 arrays at:
     INPUT_DIR/results/fig2_cache/{model}_ct_{ts}_dist.npy
 
-for 5 TCR models × 6 test sets = 30 files. These files don't exist anywhere
-on disk (deposit nor research repo), but the underlying Levenshtein
-distances are SEQUENCE-derived (independent of model predictions), so they
-can be regenerated WITHOUT model retraining.
+for 5 TCR models × 6 test sets = 30 files. These files are not shipped
+pre-computed, but the underlying Levenshtein distances are SEQUENCE-derived
+(independent of model predictions), so they can be regenerated WITHOUT
+model retraining.
 
 This script:
 1. Runs `compute_fig2_levlog_distances.py` to produce shared
@@ -99,7 +99,7 @@ def stage_per_model_copies() -> int:
         for model in TCR_MODELS:
             dst = os.path.join(TARGET_DIR, f'{model}_ct_{ts}_dist.npy')
             if os.path.exists(dst):
-                continue  # don't overwrite (per user 'don't overwrite' rule)
+                continue  # don't overwrite existing files
             shutil.copy2(src, dst)
             n_staged += 1
     return n_staged

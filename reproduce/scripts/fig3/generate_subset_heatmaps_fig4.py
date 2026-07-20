@@ -28,7 +28,7 @@ warnings.filterwarnings('ignore')
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _FIG_DIR = os.path.dirname(SCRIPT_DIR)
 DESIGNED_DIR = os.path.dirname(os.path.dirname(_FIG_DIR))
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, CACHE_DIR, FIG_DIR  # also adds CaliPPer/ to sys.path
 sys.path.insert(0, DESIGNED_DIR)
@@ -140,7 +140,7 @@ def load_bcr_cv_fold(model_key, fold):
 
 
 def load_bcr_ct(model_key, ts):
-    # fold4-as-cal pipeline (fold95 model, updated 2026-04-25)
+    # fold4-as-cal pipeline (fold95 model)
     model_dir = 'xbcr' if model_key == 'xbcr_net' else model_key
     model_ct_dir = os.path.join(RESULTS, 'bcr_bind_ct_fold4cal', model_dir)
     pred_path = os.path.join(model_ct_dir, f'{ts}_predictions.csv')

@@ -1,6 +1,5 @@
 # AntibioticsAI Retrospective Study — Data Inventory
 
-**Date:** 2026-06-04 (staged into CaliPPer)
 **Source paper:** Wong et al., *Nature* 2024 (DOI 10.1038/s41586-023-06887-8) — "Discovery of a structural class of antibiotics with explainable deep learning"
 **Authors' code repository:** https://github.com/felix-wong/antibiotics-deep-learning (DOI 10.5281/zenodo.10095879)
 

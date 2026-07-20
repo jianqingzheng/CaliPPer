@@ -1,6 +1,5 @@
 # PanPep Retrospective Study — Data Inventory
 
-**Date:** 2026-04-19
 **Source:** Gao et al., Nature Machine Intelligence 2023 (DOI: 10.1038/s42256-023-00619-3)
 **Repo:** https://github.com/bm2-lab/PanPep (cloned to `Model/PanPep/`)
 **Zenodo:** DOI: 10.5281/zenodo.7544387
@@ -34,7 +33,7 @@
 
 ---
 
-## Training Data Audit (2026-04-19)
+## Training Data Audit
 
 | Check | Result |
 |-------|--------|

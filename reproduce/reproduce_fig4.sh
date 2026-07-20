@@ -2,17 +2,17 @@
 # reproduce_fig4.sh — Fig 4 reproduction (subset-level performance prediction).
 #
 # Fig 4 reports per-subset (per-epitope / per-antigen) prediction MAE across
-# 5 TCR + 5 BCR models in 12 panels (a–l, reindexed 2026-05-21).
+# 5 TCR + 5 BCR models in 12 panels (a–l).
 #
 # ┌───────────────────────────────────────────────────────────────────────┐
 # │ THIS BASH FILE = FROM-SCRATCH REPRODUCTION (no model retraining).     │
 # │                                                                       │
 # │ Reviewers do NOT need to retrain any model to reproduce Fig 4:        │
-# │     # (data committed to reproduce/data/input/; no external download needed)        │
+# │     # (data committed to reproduce/data/input/; no download needed)   │
 # │     bash reproduce/reproduce_fig4.sh  # this script (~5 min)          │
 # │                                                                       │
-# │ Fig 4 mostly reads from committed audit CSVs (deposited as part of    │
-# │ the Zenodo bundle) + per-model TCR CT predictions. Most panels are    │
+# │ Fig 4 mostly reads from committed audit CSVs (committed in this       │
+# │ repo) + per-model TCR CT predictions. Most panels are                 │
 # │ BYTE-IDENTICAL to manuscript because they're rendered from frozen     │
 # │ audit data, not from raw predictions.                                 │
 # │                                                                       │
@@ -20,8 +20,8 @@
 # │ Same scripts as fig2/fig3 retraining at scripts/fig2/training/.       │
 # │ Use bash reproduce/retrain_fig3_inputs.sh (Fig 4 reuses same models). │
 # │                                                                       │
-# │ See BUILD_PROGRESS.md "REPRODUCIBILITY RULE — TWO-TIER MODEL" for     │
-# │ the authoritative specification.                                      │
+# │ See the two-tier reproducibility model (Tier 1 cached / Tier 2        │
+# │ retraining) documented in README.md.                                  │
 # └───────────────────────────────────────────────────────────────────────┘
 #
 # Pipeline (5 panel-generation scripts, BLOSUM-sqrt for TCR / Lev for BCR):
@@ -39,12 +39,12 @@
 #
 # Output: reproduce/figures/output/fig4/fig4_*.{png,pdf}
 #
-# Reproducibility scope (auditor-verified 2026-05-31):
+# Reproducibility scope:
 #   - Per PANEL_MANIFEST, Fig 4 has 12 panels: a, b, c, d, e, f, g, h, i, k, l, p
-#     (the manuscript reindex 2026-05-21 SKIPS panel j).
+#     (the manuscript panel indexing SKIPS panel j).
 #   - ALL 12 panels reproduce with VALUES IDENTICAL to manuscript. The input
 #     data CSVs staged at INPUT_DIR are byte-identical to the canonical
-#     sources in the research repo (verified 2026-05-31):
+#     sources:
 #       ✅ bcr_fig4_fold4cal_*_antigen_*.csv (BCR cache)
 #       ✅ tcr_fig4_blosum-sqrt_*_epitope_*.csv (TCR cache)
 #       ✅ audit_baseline_comparison_128_blosum-sqrt_results.csv (Stage 4)

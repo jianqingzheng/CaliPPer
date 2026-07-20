@@ -6,13 +6,13 @@
 #   2. Required packages importable (numpy, pandas, scipy, sklearn, matplotlib, Levenshtein)
 #   3. calipper, PAPE, MCBPE importable
 #   4. Optional GPU detection (non-fatal warning if absent)
-#   5. reproduce/data/input/ populated (hints to run [retired] if not)
+#   5. reproduce/data/input/ populated (committed in this repo)
 #   6. Write permission to reproduce/data/output/ and reproduce/figures/output/
 #
 # Exit codes:
 #   0 = ready to reproduce
 #   1 = critical failure (Python missing, calipper not importable, etc.)
-#   2 = data missing (run [retired])
+#   2 = data missing (data/input/ is committed in this repo)
 
 set -uo pipefail
 
@@ -90,7 +90,7 @@ if [[ -d "$data_input_dir" ]] && [[ -n "$(find "$data_input_dir" -type f -print 
   printf "  $PASS data/input/ populated ($file_count files)\n"
 else
   printf "  $FAIL data/input/ empty or missing\n"
-  echo "     → Run: # ([retired] retired 2026-06-10 — data committed to reproduce/data/input/)"
+  echo "     → data/input/ is committed in this repo; ensure it is present."
   err=2
 fi
 
@@ -113,7 +113,7 @@ if [[ $err -eq 0 ]]; then
   printf "$PASS ENVIRONMENT READY — you can run: bash reproduce/reproduce.sh\n"
   exit 0
 elif [[ $err -eq 2 ]]; then
-  printf "$FAIL DATA MISSING — run: # ([retired] retired 2026-06-10 — data committed to reproduce/data/input/)\n"
+  printf "$FAIL DATA MISSING — data/input/ is committed in this repo; ensure it is present.\n"
   exit 2
 else
   printf "$FAIL ENVIRONMENT FAILED — fix the errors above before running reproduce.sh\n"

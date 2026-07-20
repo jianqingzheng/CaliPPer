@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fig 5 BCR CT: Bayesian recalibration (per-variant LOO).
 
-Protocol (verified 2026-04-25):
+Protocol:
   Model:    fold4 model (trained on fold0/1/2/3, 14,355 samples)
   Pool:     fold4 test (3,655) + A1-A11 (281) + unseen (1,256) + flu (1,226) = 6,418
   Domains:  SARS (4,074) / Flu (2,344) — separated, never mixed
@@ -29,7 +29,7 @@ warnings.filterwarnings('ignore')
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PANEL_DIR = os.path.dirname(SCRIPT_DIR)
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, CACHE_DIR, FIG_DIR  # also adds CaliPPer/ to sys.path
 from style_config import apply_publication_style, BCR_MODEL_COLORS, BCR_MODEL_DISPLAY

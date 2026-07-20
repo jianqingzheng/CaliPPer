@@ -2,7 +2,7 @@
 """Assemble 4×4 composite figures from individual panels (Fig 2-5).
 
 Uses panels from blosum-sqrt/ subfolders. Creates grey placeholder for missing panels.
-Output: Manuscript/designed_figures/assembled/fig{N}_assembled.png
+Output: reproduce/scripts/assembled/fig{N}_assembled.{png,pdf}
 
 Usage:
     python assemble_figures.py              # all figures
@@ -25,7 +25,7 @@ DIST_DEFAULT = 'blosum-sqrt'
 # Per-figure distance override: fig2 uses Lev (degradation is where Lev wins)
 DIST_PER_FIG = {
     2: 'lev-logtransf',
-    3: 'lev-logtransf',  # BLOSUM worse for BCR CT (see feedback_blosum_vs_lev_limitation.md)
+    3: 'lev-logtransf',  # BLOSUM worse for BCR CT
     4: 'blosum-sqrt',
     5: 'blosum-sqrt',
     6: 'blosum-sqrt',
@@ -150,13 +150,12 @@ def assemble_4x4(fig_num, grid, title, nrows=4, ncols=4, span_map=None):
 def fig2():
     """Fig 2: Universal Performance Degradation (4×4, Lev-log)
 
-    Panel changes (2026-04-30):
+    Panel layout:
     - a-b: Sankey (spans 2 cols) — data flow epitopes→datasets→CDR3β
-    - c: TCR CV AP (was a) — 5 models overlaid
-    - d: BCR CV AP (was c) — 5 models overlaid
-    - e-f: TCR-BERT CT (was ATM-TCR) — combined scope, 6 test sets
-    - g-h: MambaAAI CT (was XBCR-net) — better flu performance
-    - Dropped: TCR CV AUROC (b) and BCR CV AUROC (d) — AP is more informative
+    - c: TCR CV AP — 5 models overlaid
+    - d: BCR CV AP — 5 models overlaid
+    - e-f: TCR-BERT CT — combined scope, 6 test sets
+    - g-h: MambaAAI CT — better flu performance
     """
     grid = [
         # Row 1: TCR Sankey + BCR Sankey + TCR CV AP + BCR CV AP
@@ -238,7 +237,7 @@ def fig4():
     import matplotlib.gridspec as gridspec
 
     # Panel definitions: (label, filename, row, col_start, col_span, row_span)
-    # 8-col grid (per 2026-05-21 user direction — i/k share 3 panel-cols total, l/p=2):
+    # 8-col grid (i/k share 3 panel-cols total, l/p=2):
     #   rows 0-1 panels = 2 cols each (4 panels × 2 = 8)
     #   rows 2-3: i (3) + k (3) + l/p (2 stacked) = 8 — no gap between k and l
     # Sequence-label widening for i, k is handled INTERNALLY in gen_fig4_heatmaps_reordered.py
@@ -255,7 +254,7 @@ def fig4():
         ('g', 'fig4_subset_mae_boxplot.png',                1, 4, 2, 1),
         ('h', 'fig4_subset_correlation_boxplot.png',        1, 6, 2, 1),
         # Rows 3-4: i (3 cols), j (3 cols), k (top) and l (bottom) each 2 cols — total 8 ✓
-        # Reindexed 2026-05-21: no letter gaps (was i, k, l, p; now i, j, k, l)
+        # Contiguous panel letters: i, j, k, l (no gaps)
         ('i', 'fig4_heatmap_epitope_mae.png',                    2, 0, 3, 2),
         ('j', 'fig4_bcr_heatmap_antigen_mae.png',                2, 3, 3, 2),
         ('k', 'fig4_boxplot_correlation_subset_type_ap.png',     2, 6, 2, 1),
@@ -434,7 +433,7 @@ def fig5():
 
 
 def fig6():
-    """Fig 6: Independent Retrospective Validation (4×4) — Redesigned 2026-05-02
+    """Fig 6: Independent Retrospective Validation (4×4)
 
     Row 1: Conceptual + prediction + baselines
     Row 2: Recalibration overview + PanPep

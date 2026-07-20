@@ -28,7 +28,7 @@ from pathlib import Path
 from scipy.stats import pearsonr, mannwhitneyu
 from sklearn.metrics import roc_auc_score, average_precision_score, f1_score
 
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR  # also adds CaliPPer/ to sys.path
 

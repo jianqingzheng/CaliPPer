@@ -25,7 +25,7 @@
 #
 # Stages 0a-0e populate INPUT_DIR/results/.../distance files which Stages 1-4
 # then consume. Without Stage 0, Stages 1-4 would use the cached distance files
-# bundled with the Zenodo deposit; with Stage 0 the pipeline regenerates them
+# committed in this repo; with Stage 0 the pipeline regenerates them
 # from raw sequences before consumption.
 #
 # Reproducibility tier: SINGLE-TIER (Fig 6) — bit-exact from scratch.
@@ -33,11 +33,10 @@
 # (no retraining); the pipeline is deterministic given the staged inputs.
 # Verified via verify.sh at max |Δ| = 9.99e-16 (machine epsilon).
 # Contrast with Fig 2-5 which use a two-tier model (T1: cached → manuscript
-# bit-exact; T2: retrain → cached tolerance band); see BUILD_PROGRESS.md
-# "REPRODUCIBILITY RULE — TWO-TIER MODEL" section.
+# bit-exact; T2: retrain → cached tolerance band), documented in README.md.
 #
 # Panels A/B (concept schematic) are NOT regenerated — they are hand-designed
-# graphics committed as binary assets in the manuscript repo. Placeholder PNGs
+# graphics committed as binary assets in this repo. Placeholder PNGs
 # are produced at the a/b slots so figure assembly does not break.
 #
 # Usage:
@@ -47,7 +46,7 @@
 #
 # Exit codes: 0 = success, non-zero = a stage or verification failed.
 #
-# Outputs (all under published_repo/CaliPPer/reproduce/):
+# Outputs (all under reproduce/):
 #   data/output/recal_data/*.csv             — per-study sample CSVs
 #   data/output/recal_data/recal_summary_all.csv
 #   data/output/recal_data/fig6_panel_c_predictions.csv
@@ -121,7 +120,7 @@ if [[ $SKIP_REGEN -eq 0 ]]; then
   done
   # Pairwise similarity-matrix caches (sim_cache_v2/) — directories must use rm -rf.
   # If these survive, Stage 0b loads pre-computed BLOSUM62 SW alignments instead
-  # of recomputing them, which is NOT from-scratch per the user's standard.
+  # of recomputing them, which is NOT a from-scratch reproduction.
   for simcache_dir in \
     "$INPUT_RESULTS/panpep_retrospective/blosum_sqrt/sim_cache_v2" \
     "$INPUT_RESULTS/bigmhc_retrospective/blosum_sqrt/sim_cache_v2" \

@@ -21,18 +21,16 @@ from pathlib import Path
 
 warnings.filterwarnings('ignore')
 
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR  # also adds CaliPPer/ to sys.path
 
 from calipper.general_evaluator import safe_metric
 
-# Import the PROVEN unified calibration functions from fig6 by loading the module
-# directly (fig6_practical_usage is a script, not a module — load via spec).
-# However, fig6 runs side-effect code at import. To avoid that, we extract just
-# the two key functions by re-defining them here from a verified AST diff against
-# fig6 (verified 2026-04-16: identical body). Source of truth: fig6_practical_usage.py
-# lines 113-234 (fit_ppv_npv_from_cal_sets + calibrate_with_curves).
+# The unified calibration functions are re-defined here rather than imported:
+# fig6_practical_usage is a script (not a module) that runs side-effect code at
+# import, so the two key functions (fit_ppv_npv_from_cal_sets +
+# calibrate_with_curves) are reproduced with identical bodies below.
 from calipper.combine_first_helpers import (
     fit_ridge_vbias, CALIBRATION_LAM, CALIBRATION_THRESHOLD,
 )

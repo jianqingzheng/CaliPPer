@@ -19,7 +19,7 @@ import numpy as np
 import pandas as pd
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-# Self-contained path anchors (BUILD_PLAN §1+§5.2)
+# Self-contained path anchors
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _paths import INPUT_DIR, OUTPUT_DIR, CACHE_DIR, FIG_DIR  # also adds CaliPPer/ to sys.path
 from calipper.general_evaluator import safe_metric
@@ -37,7 +37,7 @@ N_BINS = 8
 MIN_SAMPLES = 30
 METRICS = ['aucroc', 'ap', 'f1']
 from calipper.core import VBIAS_BETA_LAM
-UNIFIED_LAM = VBIAS_BETA_LAM   # 0.05, from General_Eval/s2dd.py
+UNIFIED_LAM = VBIAS_BETA_LAM   # 0.05
 RESIDUAL_LAM = VBIAS_BETA_LAM  # same
 
 CT_SETS = ['A1-A11', 'unseen', 'flu']
@@ -99,7 +99,7 @@ for fold in range(5):
     }
     print(f"  CV fold{fold}: {len(te)} samples")
 
-# CT data (fold4-as-cal pipeline, XBCR-net fold95 model, updated 2026-04-25)
+# CT data (fold4-as-cal pipeline, XBCR-net fold95 model)
 ct_data = {}  # test_set → dict(label, pred, distance)
 for ts in CT_SETS:
     pred_path = os.path.join(RESULTS, 'bcr_bind_ct_fold4cal', 'xbcr', f'{ts}_predictions.csv')

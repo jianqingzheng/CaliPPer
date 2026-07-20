@@ -1,6 +1,5 @@
 # BigMHC Retrospective Study — Data Inventory
 
-**Date:** 2026-04-20
 **Source:** Albert et al., Nature Machine Intelligence 2023 (DOI: 10.1038/s42256-023-00694-6)
 **Repo:** https://github.com/KarchinLab/bigmhc (cloned to `Model/BigMHC/`)
 **Data:** Mendeley DOI: 10.17632/dvmz6pkzvb (v4)
