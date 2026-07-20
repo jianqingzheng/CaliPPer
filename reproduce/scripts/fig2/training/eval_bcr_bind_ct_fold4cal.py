@@ -28,10 +28,10 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from General_Eval.combine_first_helpers import (
+from calipper.combine_first_helpers import (
     compute_chain_weights, compute_combine_first_distances)
-from General_Eval.general_evaluator import safe_metric
-from General_Eval.s2dd import (predict_metric, predict_subset_metric,
+from calipper.general_evaluator import safe_metric
+from calipper.core import (predict_metric, predict_subset_metric,
                                 fit_recalibration, apply_recalibration)
 from scipy.stats import pearsonr
 

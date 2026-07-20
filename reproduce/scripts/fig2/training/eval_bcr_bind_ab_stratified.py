@@ -45,11 +45,11 @@ from scipy.stats import pearsonr, spearmanr
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, PROJECT_ROOT)
 
-from General_Eval.general_evaluator import (
+from calipper.general_evaluator import (
     safe_metric,
     binned_correlations,
 )
-from General_Eval.combine_first_helpers import (
+from calipper.combine_first_helpers import (
     compute_chain_weights, compute_combine_first_distances,
 )
 

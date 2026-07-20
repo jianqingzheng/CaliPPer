@@ -27,7 +27,7 @@ from scipy.stats import pearsonr, spearmanr
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, PROJECT_ROOT)
 
-from General_Eval.general_evaluator import (
+from calipper.general_evaluator import (
     compute_pairwise_ratios,
     compute_multichain_distances,
     safe_metric,
