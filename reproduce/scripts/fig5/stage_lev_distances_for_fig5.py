@@ -45,16 +45,36 @@ TEST_SETS = ['seen_test', 'unseen_fold34', 'v3_combined', 'v4_combined',
 
 SCRIPTS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LEV_DIST_SOURCE = os.path.join(OUTPUT_DIR, 'fig2_cache_lev')
+# Tier-1 deposit cache: committed LogDist arrays (distance numbers only — no private
+# TCR sequences), used when the regenerated output cache is absent.
+COMMITTED_LEV_CACHE = os.path.join(INPUT_DIR, 'results', 'fig2_cache_lev')
 TARGET_DIR = os.path.join(INPUT_DIR, 'results', 'fig2_cache')
 
 
 def ensure_lev_distances_computed() -> bool:
-    """Run compute_fig2_levlog_distances.py if its output isn't present."""
+    """Ensure the 6 shared Lev arrays exist at LEV_DIST_SOURCE.
+
+    Priority: (1) already-regenerated output cache; (2) committed Tier-1 deposit
+    cache (results/fig2_cache_lev/, distance numbers only — no private sequences);
+    (3) regenerate via compute_fig2_levlog_distances.py (Tier-2, needs the raw
+    in-house TCR reference).
+    """
     expected_files = [os.path.join(LEV_DIST_SOURCE, f'{ts}_dist.npy')
                        for ts in TEST_SETS]
     if all(os.path.exists(f) for f in expected_files):
         print(f"[stage_lev] All 6 shared Lev arrays already cached at {LEV_DIST_SOURCE}")
         return True
+    # Tier-1: restore from the committed deposit cache if present (no private data).
+    committed = [os.path.join(COMMITTED_LEV_CACHE, f'{ts}_dist.npy') for ts in TEST_SETS]
+    if all(os.path.exists(f) for f in committed):
+        os.makedirs(LEV_DIST_SOURCE, exist_ok=True)
+        for ts in TEST_SETS:
+            shutil.copy2(os.path.join(COMMITTED_LEV_CACHE, f'{ts}_dist.npy'),
+                         os.path.join(LEV_DIST_SOURCE, f'{ts}_dist.npy'))
+        print(f"[stage_lev] Restored 6 Lev arrays from committed deposit cache "
+              f"{COMMITTED_LEV_CACHE}")
+        return True
+    # Tier-2: regenerate from raw sequences (needs the in-house TCR reference).
     print(f"[stage_lev] Running compute_fig2_levlog_distances.py...")
     compute_script = os.path.join(SCRIPTS_DIR, 'compute_fig2_levlog_distances.py')
     proc = subprocess.run([sys.executable, compute_script], capture_output=False)

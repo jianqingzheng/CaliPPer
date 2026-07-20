@@ -62,6 +62,10 @@ from calipper.general_evaluator import safe_metric
 RESULTS = os.path.join(INPUT_DIR, 'results')
 BLOSUM_CACHE = os.path.join(RESULTS, 'fig2_cache')
 LEVLOG_CACHE = os.path.join(OUTPUT_DIR, 'fig2_cache_lev')
+# Tier-1 deposit cache: committed LogDist arrays (distance numbers only — no private
+# TCR sequences). Read when the regenerated output cache is absent, so Fig 2
+# reproduces on the public deposit without the in-house TCR reference.
+LEVLOG_CACHE_COMMITTED = os.path.join(RESULTS, 'fig2_cache_lev')
 
 # Default: lev-log (matches manuscript canonical fig2 panels in lev-logtransf/).
 # Set DIST_TYPE='blosum-sqrt' env var to switch.
@@ -86,7 +90,10 @@ def get_distance_path(model: str, test_set: str) -> str:
     the pre-computed cache in INPUT_DIR/results/fig2_cache/.
     """
     if DIST_TYPE == 'lev-log':
-        return os.path.join(LEVLOG_CACHE, f'{test_set}_dist.npy')
+        p = os.path.join(LEVLOG_CACHE, f'{test_set}_dist.npy')
+        if not os.path.exists(p):  # fall back to committed Tier-1 deposit cache
+            p = os.path.join(LEVLOG_CACHE_COMMITTED, f'{test_set}_dist.npy')
+        return p
     return os.path.join(BLOSUM_CACHE, f'{model}_ct_{test_set}_blosumsqrt_dist.npy')
 
 

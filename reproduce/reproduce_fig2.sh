@@ -146,6 +146,18 @@ echo
 
 START=$(date +%s)
 
+# Deposit mode: if the raw in-house TCR reference is absent, use the committed
+# Tier-1 LogDist cache (data/input/results/fig2_cache_lev/, distance numbers only —
+# no private sequences) instead of regenerating. Full regen (Tier-2) needs the raw
+# TCR sequences and runs automatically when they are present.
+RAW_TCR_REF="$REPRO_DIR/data/input/Data/tcr_seq/proc_files/tcr_ml_stratified_v3/train_data.csv"
+if [[ $RUN_STAGE_1 -eq 1 && ! -f "$RAW_TCR_REF" ]]; then
+  echo "[fig2] raw TCR reference absent — using committed Tier-1 LogDist cache"
+  echo "       (data/input/results/fig2_cache_lev/); skipping Stage 1 regen."
+  echo
+  RUN_STAGE_1=0
+fi
+
 # ───────────────────────────────────────────────────────────────────────
 # Stage 1: compute LogDist arrays for 5 models × 6 test sets
 # Cache cleared first so compute_fig2_levlog_distances.py's per-file
