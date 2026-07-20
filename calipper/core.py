@@ -10,9 +10,8 @@ NEW in v2.7 (vs v2.6):
             n_bins = max(4, min(8, n_minority // 8))
        where n_minority = min(n_pos_cal, n_neg_cal). min_per_bin=8 ensures ≥8
        minority-class samples per bin (matches manuscript Methods main.tex
-       L376/L453/L498/L511/L531 + supplementary.tex L406). Restores Fix 1
-       (commit 3b6946d0, 2026-05-11) after accidental revert in commit
-       50b7b16d (2026-05-14). apply_recalibration also uses adaptive n_bins.
+       L376/L453/L498/L511/L531 + supplementary.tex L406). apply_recalibration
+       also uses adaptive n_bins.
 
     3. Joint curve + β vbias correction in predict_metric():
        Residual (actual − PAPE) is fitted with fit_best_curve (exp or Gaussian)
@@ -439,7 +438,7 @@ def compute_s2dd_distances(test_df, train_df, chain_cols, k, b, K,
       - task='degradation': sigma_C + weighted_max_znorm (degradation strategy)
             Best for bin-level degradation curves (bin_R²=0.791).
 
-    Verified 2026-04-28:
+    Empirically:
       TCR per-epitope: uniform wins all 6 cells (+0.007 to +0.049 r vs sigma_C)
       BCR per-antigen: sigma_C wins all 6 cells (-0.002 to -0.020 r vs uniform)
       For BCR, sigma_C is better because variant_seq carries ~99.5% weight and
@@ -468,8 +467,7 @@ def compute_s2dd_distances(test_df, train_df, chain_cols, k, b, K,
                 f"BLOSUM-sqrt captures biochemical similarity that Levenshtein misses "
                 f"for short sequences (≤20 AA), improving recalibration by +0.02 to "
                 f"+0.08 ΔAUROC. Consider compute_s2dd_pluggable() with BLOSUM-SW "
-                f"similarity and transform='sqrt'. "
-                f"See feedback_blosum_vs_lev_limitation.md for evidence.",
+                f"similarity and transform='sqrt'. ",
                 UserWarning, stacklevel=2)
             break  # One warning is enough
 
@@ -502,7 +500,7 @@ def predict_subset_metric(cal_data: Dict[str, Tuple],
         When bin_strategy='subset' (epitope/variant prediction), input distances
         should be computed with ``compute_s2dd_distances(task='subset')`` which
         uses uniform+znorm_sum combining. This improves TCR per-epitope prediction
-        by +0.049 r vs sigma_C (verified 2026-04-28). For BCR per-antigen,
+        by +0.049 r vs sigma_C. For BCR per-antigen,
         sigma_C is better (-0.014 r), so use ``task='degradation'`` or the default
         sigma_C distances.
 

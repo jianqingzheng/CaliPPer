@@ -110,8 +110,7 @@ def compute_s2dd_pluggable(test_df, train_df, chain_cols, weights,
                 f"BLOSUM-sqrt on long sequences ({col}: mean {mean_len:.0f} AA). "
                 f"BLOSUM-SW similarity saturates for sequences >100 AA with few "
                 f"mutations, compressing distances and losing discrimination. "
-                f"Consider Levenshtein-log (transform='log') instead. "
-                f"See feedback_blosum_vs_lev_limitation.md for evidence.",
+                f"Consider Levenshtein-log (transform='log') instead. ",
                 UserWarning, stacklevel=2)
         elif transform == 'log' and mean_len <= 20 and similarity_fn is not None:
             # Only warn if a BLOSUM similarity_fn was provided but log transform chosen

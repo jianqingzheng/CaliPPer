@@ -3,7 +3,7 @@
 All scripts that compute LogDist distances should use these functions
 to ensure a consistent configuration.
 
-Unified method for subset-level performance prediction (2026-04-12):
+Unified method for subset-level performance prediction:
 
   Fit:         fit_ridge_vbias(d, bin_mp, y, lam=PERFORMANCE_PREDICTION_LAM)
                lam=0.0 for TCR CV/CT and BCR CV; lam=0.05 for BCR CT only
@@ -28,7 +28,7 @@ Two S2DD distance strategies (weighting + combine method):
   No single weighting wins all cells (uniform 19/30, sigma_C 9/30 on CT).
   Use get_s2dd_config() to obtain (weights, combine_method) for a given strategy.
 
-Unified method for Bayesian calibration via PPV/NPV (2026-04-12):
+Unified method for Bayesian calibration via PPV/NPV:
 
   The calibration pipeline uses bin-level mp at BOTH fit and predict time,
   fully unified with the performance prediction pipeline. Key settings:
@@ -264,12 +264,12 @@ def compute_combine_first_distances(test_df, train_df, chain_cols, weights,
 # Canonical curve:  metric = a * exp(-b * d) + c + β * mean_p_bin
 # Ridge penalty:    loss = MSE + lam * β²
 #
-# Pipeline-specific λ (2026-04-12 unified decision):
+# Pipeline-specific λ:
 #   λ = 0.0  for TCR CV, TCR CT, BCR CV — stable fit at ≥8 training points
 #   λ = 0.05 for BCR binding CT only — 8 cal bins per within-test half-split,
 #            1 residual DoF on 4 params; β overfits at λ=0
 #
-# Prediction aggregation (2026-04-12 matched-granularity principle):
+# Prediction aggregation (matched-granularity principle):
 #   ALWAYS use avg_then_eval: predict_ridge_vbias(params, [mean_d], [mean_mp])
 #   NEVER use eval_then_avg:  mean(predict_ridge_vbias(params, d_i, mp)) — this
 #   adds Jensen-shifted noise uncorrelated with truth (loses 50/60 cells,

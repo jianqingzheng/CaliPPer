@@ -147,8 +147,7 @@ if __name__ == '__main__':
 
 
 # ============================================================================
-# Inlined from General_Eval/robust_combination_search.py (which is intentionally
-# excluded from the published release). Used by report_generator.py.
+# Helper functions used by report_generator.py.
 # ============================================================================
 
 def df_to_markdown(df) -> str:
