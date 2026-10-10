@@ -13,7 +13,6 @@ Panel scripts orchestrated (in `reproduce/scripts/fig5/`):
   - generate_bcr_ct_recalibration.py
   - generate_combined_dumbbell.py
   - gen_ap_dumbbell.py
-  - gen_ece.py
   - gen_ppv_npv_curves.py
   - gen_roc_prc.py
   - gen_recal_paired_boxplot.py
