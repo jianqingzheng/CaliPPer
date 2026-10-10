@@ -330,7 +330,7 @@ for model in BCR_MODELS:
 
         cal_data_f = {'cal': (cal_y, cal_p, cal_d)}
         ppv_p, npv_p, pp, pn, _cal_prev = fit_recalibration(cal_data_f)
-        cal_s = apply_recalibration(val_y, val_p, val_d, ppv_p, npv_p, pp, pn)
+        cal_s = apply_recalibration(val_y, val_p, val_d, ppv_p, npv_p, pp, pn, cal_prev=_cal_prev)
         all_y.extend(val_y.tolist())
         all_raw.extend(val_p.tolist())
         all_cal.extend(cal_s.tolist())
@@ -388,7 +388,7 @@ for model in TCR_MODELS:
 
         cal_data_f = {'cal': (cal_y, cal_p, cal_d)}
         ppv_p, npv_p, pp, pn, _cal_prev = fit_recalibration(cal_data_f)
-        cal_s = apply_recalibration(val_y, val_p, val_d, ppv_p, npv_p, pp, pn)
+        cal_s = apply_recalibration(val_y, val_p, val_d, ppv_p, npv_p, pp, pn, cal_prev=_cal_prev)
         all_y.extend(val_y.tolist())
         all_raw.extend(val_p.tolist())
         all_cal.extend(cal_s.tolist())
