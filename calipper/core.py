@@ -768,7 +768,7 @@ def fit_recalibration(cal_data, n_bins=None, threshold=None, min_samples=30,
 
 def apply_recalibration(test_y, test_p, test_d,
                          ppv_params, npv_params, p_pos, p_neg,
-                         n_bins=None, prev=None):
+                         n_bins=None, prev=None, cal_prev=None):
     """[S2DD v2.7] Apply Bayesian sigmoid recalibration.
 
     n_bins: number of bins for computing bin-level mean prediction (mp).
@@ -776,10 +776,17 @@ def apply_recalibration(test_y, test_p, test_d,
     ensure ≥4 samples per bin on the test set. This balances matching
     the fit granularity with having enough samples per bin for stable mp.
 
-    prev: class prevalence for the Platt scaling base rate. Should be set
-    to the CALIBRATION prevalence (returned by fit_recalibration) to avoid
-    test label leakage. If None, falls back to test_y.mean() for backward
-    compatibility, but this uses test labels and is NOT recommended.
+    prev: explicit class-prevalence anchor for the base rate (e.g. a known
+    deployment prevalence). When given, it overrides cal_prev.
+    cal_prev: the CALIBRATION-set prevalence (the 5th return value of
+    fit_recalibration). This is the recommended, label-free default anchor:
+    when prev is None, cal_prev is used as the base rate.
+
+    A prevalence anchor is required: the resolution order is explicit prev,
+    then cal_prev. If BOTH are None a ValueError is raised -- the base rate is
+    never taken from the test labels, so recalibration stays label-free. In
+    the standard fit -> apply workflow, pass cal_prev (from fit_recalibration)
+    so the base rate comes from the calibration set, not the test set.
     """
     if n_bins is None:
         n_pos = int((test_y == 1).sum())
@@ -795,7 +802,14 @@ def apply_recalibration(test_y, test_p, test_d,
         return np.clip(a * np.exp(-bx * d) + c + beta * mp, 0.01, 0.99)
 
     if prev is None:
-        prev = test_y.mean()  # backward compat; prefer cal_prev
+        prev = cal_prev
+    if prev is None:
+        raise ValueError(
+            "apply_recalibration requires a prevalence anchor: pass cal_prev "
+            "(the 5th return value of fit_recalibration) to anchor on the "
+            "calibration set, or an explicit prev (e.g. a known deployment "
+            "prevalence). The base rate is never inferred from the test "
+            "labels, so prev=None with cal_prev=None is not allowed.")
     si = np.argsort(test_d)
     bs = max(len(si) // n_bins, 1)
     mp_per = np.zeros(len(test_d))
