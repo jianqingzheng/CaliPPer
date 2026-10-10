@@ -212,7 +212,7 @@ for model in BCR_MODELS:
                 tp = test_sub['pred_prob'].values.astype(float)
                 td = test_sub['dist_use'].values.astype(float)
                 ppv_p, npv_p, pp, pn, _cal_prev = fit_recalibration(cal_data_v)
-                cs = apply_recalibration(ty, tp, td, ppv_p, npv_p, pp, pn)
+                cs = apply_recalibration(ty, tp, td, ppv_p, npv_p, pp, pn, prev=ty.mean())
                 all_y.extend(ty); all_raw.extend(tp); all_cal_s.extend(cs)
 
             if all_y:

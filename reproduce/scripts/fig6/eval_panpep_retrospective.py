@@ -367,54 +367,9 @@ def run_majority_evaluation(data):
                 r, _ = pearsonr(sub['actual'], sub['predicted']) if len(sub) >= 3 else (np.nan, np.nan)
                 print(f"  LOO {metric}: MAE={mae:.3f}, R={r:.3f} (n={len(sub)})")
 
-    # Step 7: Bayesian recalibration (within-test half-split)
-    recal_dir = RESULTS_DIR / "neoantigen_recalibration"
-    recal_dir.mkdir(parents=True, exist_ok=True)
-
-    # Split peptides into cal/test halves
-    np.random.seed(42)
-    pep_shuf = np.random.permutation(peptides)
-    cal_peps = set(pep_shuf[:len(pep_shuf)//2])
-    test_peps = set(pep_shuf[len(pep_shuf)//2:])
-
-    cal_data = {}
-    for pep in cal_peps:
-        sub = pred_df[pred_df['peptide'] == pep]
-        cal_data[pep] = (
-            sub['label'].values.astype(int),
-            sub['prediction'].values.astype(float),
-            sub['distance'].values
-        )
-
-    test_sub = pred_df[pred_df['peptide'].isin(test_peps)]
-    test_y = test_sub['label'].values.astype(int)
-    test_p = test_sub['prediction'].values.astype(float)
-    test_d = test_sub['distance'].values
-
-    try:
-        ppv_params, npv_params, p_pos, p_neg = fit_recalibration(cal_data)
-        cal_scores = apply_recalibration(
-            test_y, test_p, test_d, ppv_params, npv_params, p_pos, p_neg)
-
-        recal_results = []
-        for metric in ['aucroc', 'ap', 'f1']:
-            if metric == 'f1':
-                before = f1_score(test_y, (test_p > 0.5).astype(int))
-                after = f1_score(test_y, (cal_scores > 0.5).astype(int))
-            else:
-                before = safe_metric(metric, test_y, test_p)
-                after = safe_metric(metric, test_y, cal_scores)
-            recal_results.append({
-                'metric': metric, 'n_samples': len(test_y),
-                'before': before, 'after': after,
-                'delta': after - before
-            })
-            print(f"  Recalibration {metric}: {before:.3f} → {after:.3f} (Δ={after-before:+.3f})")
-
-        recal_df = pd.DataFrame(recal_results)
-        recal_df.to_csv(recal_dir / "majority_recalibration.csv", index=False)
-    except Exception as e:
-        print(f"  Recalibration failed: {e}")
+    # Step 7 (in-script recalibration) removed: Fig 6 recalibration is computed
+    # downstream by compute_fig6_recal_data.py from the prediction CSVs written
+    # above. This script now only runs PanPep inference and emits predictions.
 
     return pred_df
 

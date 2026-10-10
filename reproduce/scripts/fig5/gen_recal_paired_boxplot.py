@@ -198,7 +198,7 @@ for model in BCR_MODELS:
             cal_s = apply_recalibration(
                 ty, ts_df['pred_prob'].values.astype(float),
                 ts_df['distance'].values.astype(float),
-                ppv_p, npv_p, pp, pn)
+                ppv_p, npv_p, pp, pn, prev=ty.mean())
             all_before_y.extend(ty)
             all_before_p.extend(ts_df['pred_prob'].values.astype(float))
             all_after_p.extend(cal_s)

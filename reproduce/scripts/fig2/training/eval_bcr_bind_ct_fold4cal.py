@@ -136,7 +136,7 @@ def run_evaluation(cal_df, test_sets):
     print(f"    Cal: n={len(cal_df)}, prev={cal_y.mean():.3f}, "
           f"d=[{cal_d.min():.2f},{cal_d.max():.2f}]")
 
-    ppv_p, npv_p, pp, pn, *_ = fit_recalibration(cal_data)
+    ppv_p, npv_p, pp, pn, cal_prev = fit_recalibration(cal_data)
 
     for ts_name, ts_df in test_sets.items():
         test_y = ts_df['rbd'].values.astype(int)
@@ -151,7 +151,7 @@ def run_evaluation(cal_df, test_sets):
                   f"pred={result['estimated'][metric]:.3f}, err={err:.3f}")
 
         orig_auc = safe_metric('aucroc', test_y, test_p)
-        cal_s = apply_recalibration(test_y, test_p, test_d, ppv_p, npv_p, pp, pn)
+        cal_s = apply_recalibration(test_y, test_p, test_d, ppv_p, npv_p, pp, pn, cal_prev=cal_prev)
         recal_auc = safe_metric('aucroc', test_y, cal_s)
         print(f"    {ts_name} recal: {orig_auc:.3f}→{recal_auc:.3f} "
               f"Δ={recal_auc-orig_auc:+.3f}")
@@ -475,7 +475,7 @@ def main():
         cal_p = model_cal['pred_prob'].values.astype(float)
         cal_d = model_cal['distance'].values.astype(float)
         cal_data = {'fold_test': (cal_y, cal_p, cal_d)}
-        ppv_p, npv_p, pp, pn, *_ = fit_recalibration(cal_data)
+        ppv_p, npv_p, pp, pn, cal_prev = fit_recalibration(cal_data)
 
         print(f"\n  {MODEL_DISPLAY[model_name]}:")
         for ts_name in ext_test_sets:
@@ -487,7 +487,7 @@ def main():
             p = df['pred_prob'].values.astype(float)
             d = df['distance'].values.astype(float)
             auc = safe_metric('aucroc', y, p)
-            cal_s = apply_recalibration(y, p, d, ppv_p, npv_p, pp, pn)
+            cal_s = apply_recalibration(y, p, d, ppv_p, npv_p, pp, pn, cal_prev=cal_prev)
             recal_auc = safe_metric('aucroc', y, cal_s)
             r = predict_metric(cal_data, p, d, metrics=['aucroc'])
             err = abs(r['estimated']['aucroc'] - auc)

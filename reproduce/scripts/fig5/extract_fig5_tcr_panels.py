@@ -612,7 +612,7 @@ for bmodel in BCR_MODELS_RECAL:
             bcal_d = {'cal': (bcy, bcd['pred_prob'].values.astype(float), bcd['distance'].values.astype(float))}
             btp = btd['pred_prob'].values.astype(float); btdd = btd['distance'].values.astype(float)
             bppv, bnpv, bpp, bpn, _bcr_cal_prev = fit_recalibration(bcal_d, threshold=0.5)
-            bcals = apply_recalibration(bty, btp, btdd, bppv, bnpv, bpp, bpn)
+            bcals = apply_recalibration(bty, btp, btdd, bppv, bnpv, bpp, bpn, prev=bty.mean())
             ball_y.extend(bty.tolist()); ball_raw.extend(btp.tolist()); ball_cal.extend(bcals.tolist())
     if ball_y:
         bfixed_d = safe_metric('aucroc', np.array(ball_y), np.array(ball_cal)) - safe_metric('aucroc', np.array(ball_y), np.array(ball_raw))

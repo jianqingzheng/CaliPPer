@@ -278,7 +278,7 @@ for model in BCR_MODELS:
         test_p = test_sub['pred_prob'].values.astype(float)
         test_d = test_sub['distance'].values.astype(float)
         ppv_p, npv_p, pp, pn, _cal_prev = fit_recalibration(cal_data_v)
-        cal_s = apply_recalibration(test_y, test_p, test_d, ppv_p, npv_p, pp, pn)
+        cal_s = apply_recalibration(test_y, test_p, test_d, ppv_p, npv_p, pp, pn, prev=test_y.mean())
         all_y.extend(test_y.tolist())
         all_raw.extend(test_p.tolist())
         all_cal.extend(cal_s.tolist())

@@ -355,7 +355,7 @@ def main():
         ppv_params, npv_params, p_pos, p_neg, _cal_prev = fit_recalibration(cal_data_recal)
         cal_scores = apply_recalibration(
             y1[test_idx], p1[test_idx], d1[test_idx],
-            ppv_params, npv_params, p_pos, p_neg)
+            ppv_params, npv_params, p_pos, p_neg, cal_prev=_cal_prev)
 
         recal_results = []
         for metric in ['aucroc', 'ap', 'f1']:
@@ -380,7 +380,7 @@ def main():
     try:
         ppv_params, npv_params, p_pos, p_neg, _cal_prev = fit_recalibration(cal_data_main)
         cal_scores_blac = apply_recalibration(
-            y2, p2, d2_full, ppv_params, npv_params, p_pos, p_neg)
+            y2, p2, d2_full, ppv_params, npv_params, p_pos, p_neg, cal_prev=_cal_prev)
 
         recal_blac = []
         for metric in ['aucroc', 'ap', 'f1']:

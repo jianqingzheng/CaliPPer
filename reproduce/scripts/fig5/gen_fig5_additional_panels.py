@@ -180,7 +180,7 @@ for model in BCR_MODELS:
             tp = test_sub['pred_prob'].values.astype(float)
             td = test_sub['distance'].values.astype(float)
             ppv_p, npv_p, pp, pn, _cal_prev = fit_recalibration(cal_data_v)
-            cs = apply_recalibration(ty, tp, td, ppv_p, npv_p, pp, pn)
+            cs = apply_recalibration(ty, tp, td, ppv_p, npv_p, pp, pn, prev=ty.mean())
             all_y.extend(ty); all_p.extend(tp); all_cal.extend(cs); all_d.extend(td)
 
     if not all_y:
@@ -299,7 +299,7 @@ for model in BCR_MODELS:
     for ts in ['A1-A11', 'unseen', 'flu']:
         if ts not in bcr_data[model]: continue
         y, p, d = bcr_data[model][ts]
-        cal_s = apply_recalibration(y, p, d, ppv_p, npv_p, pp, pn)
+        cal_s = apply_recalibration(y, p, d, ppv_p, npv_p, pp, pn, prev=y.mean())
         delta = safe_metric('aucroc', y, cal_s) - safe_metric('aucroc', y, p)
         ppv_mae, npv_mae = compute_ppvnpv_mae(y, p, d, ppv_p, npv_p, pp, pn)
         bcr_scatter_data.append((model, ts, delta, ppv_mae, npv_mae))

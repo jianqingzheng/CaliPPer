@@ -171,7 +171,7 @@ def compute_bcr_recal():
                 # per-variant prevalence varies widely (0.0 to 0.5).
                 # cal_prev ≈ 0.48 would be wrong for zero-binder variants.
                 cal_s = apply_recalibration(test_y, test_p, test_d,
-                                            ppv_p, npv_p, pp, pn)
+                                            ppv_p, npv_p, pp, pn, prev=test_y.mean())
                 all_y.extend(test_y.tolist())
                 all_raw.extend(test_p.tolist())
                 all_cal.extend(cal_s.tolist())
