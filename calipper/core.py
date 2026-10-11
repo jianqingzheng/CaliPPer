@@ -771,10 +771,15 @@ def apply_recalibration(test_y, test_p, test_d,
                          n_bins=None, prev=None, cal_prev=None):
     """[S2DD v2.7] Apply Bayesian sigmoid recalibration.
 
-    n_bins: number of bins for computing bin-level mean prediction (mp).
-    If None, uses adaptive_n_bins from test_y class balance, capped to
-    ensure ≥4 samples per bin on the test set. This balances matching
-    the fit granularity with having enough samples per bin for stable mp.
+    n_bins: number of bins for computing the bin-level mean prediction (mp).
+    If None, it is derived from the model's PREDICTED class counts on the query
+    (test_p thresholded at 0.5), never from query labels, then capped by query
+    size. The apply stage estimates no PPV/NPV, so it needs no true labels here;
+    this keeps recalibration label-free.
+
+    test_y: NOT used by this function. Recalibration reads only the query
+    predictions (test_p) and distances (test_d); test_y is retained as the first
+    argument for call-signature compatibility only.
 
     prev: explicit class-prevalence anchor for the base rate (e.g. a known
     deployment prevalence). When given, it overrides cal_prev.
@@ -789,11 +794,16 @@ def apply_recalibration(test_y, test_p, test_d,
     so the base rate comes from the calibration set, not the test set.
     """
     if n_bins is None:
-        n_pos = int((test_y == 1).sum())
-        n_neg = int((test_y == 0).sum())
-        # Use same adaptive formula as fit, then cap by test set size
+        # Label-free: derive the bin count from the model's PREDICTED class counts
+        # (query predictions), never from query labels. The apply stage estimates no
+        # PPV/NPV here, so it needs no true labels; this binning only sets the
+        # granularity of the mean-prediction covariate. For a working model the
+        # predicted counts match the label-derived counts (verified identical across
+        # the Fig 6 studies), so results are unchanged while test_y is never read.
+        n_pos = int((test_p >= 0.5).sum())
+        n_neg = int((test_p < 0.5).sum())
         n_bins = adaptive_n_bins(n_pos, n_neg)
-        max_bins_for_test = max(4, len(test_y) // 4)
+        max_bins_for_test = max(4, len(test_p) // 4)
         n_bins = min(n_bins, max_bins_for_test)
     def _eval_curve(params, d, mp):
         if params is None:
