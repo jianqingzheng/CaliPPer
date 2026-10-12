@@ -66,19 +66,19 @@ code that doesn't fit a unified "drop-in inference" pattern).
 
 ## ⚠ Known hardcoded path in `eval_bcr_bind_ab_stratified.py`
 
-Line 40 of `eval_bcr_bind_ab_stratified.py` contains a hardcoded path
-to the author's local Python interpreter:
+`eval_bcr_bind_ab_stratified.py` calls a separate TensorFlow interpreter for
+XBCR-net training/inference, read from the `TF_PYTHON` environment variable:
 
 ```python
-TF_PYTHON = '/home/jzheng/anaconda3/envs/tf/bin/python'
+TF_PYTHON = os.environ.get('TF_PYTHON', 'python')
 ```
 
-If a reviewer runs this script as-is, it will fail with `FileNotFoundError`
-on this exact path. To use the script, replace `TF_PYTHON` with your own
-TF 2.4.1-compatible Python interpreter path (e.g., the output of
-`which python` inside your XBCR-net conda env). The other 12 training
-scripts use the active Python interpreter and do not hardcode any
-environment-specific paths.
+XBCR-net needs TensorFlow 2.4.x, which typically lives in its own conda env.
+Before running, point `TF_PYTHON` at that interpreter, e.g.
+`export TF_PYTHON=$(conda run -n tf which python)`. If left unset it defaults
+to `python` (the active interpreter), which fails if that env lacks
+TensorFlow. The other training scripts use the active Python interpreter and
+hardcode no environment-specific paths.
 
 ## Important: scripts as-deposited, not patched
 

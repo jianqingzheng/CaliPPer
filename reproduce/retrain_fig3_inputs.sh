@@ -188,11 +188,11 @@ run_model() {
   # Warn reviewers about hardcoded TF_PYTHON path inside XBCR-net scripts
   # (eval_bcr_bind_ct_fold4cal.py + eval_bcr_combined_ab_stratified.py + helpers)
   if [[ "$key" == "bcr_ct_fold4cal" || "$key" == "bcr_cv_combined" ]]; then
-    echo "⚠ WARNING: XBCR-net scripts hardcode TF_PYTHON='/home/jzheng/anaconda3/envs/tf/bin/python'"
-    echo "  A reviewer machine without this exact path will fail. Edit the script"
-    echo "  to point to your local TF 2.4.1 interpreter (e.g., 'conda activate"
-    echo "  XBCR-net && which python') before running. See"
-    echo "  reproduce/scripts/fig2/training/README.md ⚠ warning section."
+    echo "⚠ NOTE: XBCR-net training/inference needs a TensorFlow 2.4.x env."
+    echo "  Set the TF_PYTHON environment variable to that interpreter (e.g."
+    echo "  'export TF_PYTHON=\$(conda run -n tf which python)') before running;"
+    echo "  it defaults to 'python'. See"
+    echo "  reproduce/scripts/fig2/training/README.md (TF_PYTHON note)."
     echo
   fi
 

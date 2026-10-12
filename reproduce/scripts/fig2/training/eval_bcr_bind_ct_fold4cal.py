@@ -45,8 +45,8 @@ CV_BASE = 'results/xbcr/combined_bind_ab_cv'
 OUTPUT_DIR = 'results/bcr_bind_ct_fold4cal'
 
 TEST_SET_PATHS = {
-    'A1-A11': 'Data/bcr_seq/metabcr_bind_0611/A1-A11_testset',
-    'unseen': 'Data/bcr_seq/metabcr_bind_0611/unseen_testset',
+    'A1-A11': 'Data/bcr_seq/bcr_bind_0611/A1-A11_testset',
+    'unseen': 'Data/bcr_seq/bcr_bind_0611/unseen_testset',
     'flu':    'Data/bcr_seq/flu_bind/clean_test',
 }
 

@@ -78,12 +78,12 @@ d_neo = neo['s2dd_blosum'].values
 
 cal_data = {'zero_shot': (y_zs, p_zs, d_zs)}
 ppv_p, npv_p, p_pos, p_neg, _cal_prev = fit_recalibration(cal_data)
-# OVERRIDE RATIONALE: cal set has 1714 samples → fit uses n_bins=8. Test set has only
-# 100 samples → adaptive n_bins gives 4, creating a fit/apply granularity mismatch.
-# The mp feature in the PPV/NPV curves was learned at 8-bin resolution; applying at
-# 4-bin resolution loses the distance gradient that the curves encode.
-# This is a v2.7 API limitation: apply computes n_bins from test_y independently
-# of what fit used. Until the API returns fit's n_bins, we override to match.
+# OVERRIDE RATIONALE: cal set has 1714 samples → fit uses n_bins=8. The 100-sample
+# target would get a smaller adaptive n_bins, creating a fit/apply granularity
+# mismatch: the mp feature in the PPV/NPV curves was learned at 8-bin resolution, so
+# applying at a coarser resolution loses the distance gradient the curves encode.
+# apply_recalibration derives n_bins label-free from the model predictions (never
+# from test labels); we pin n_bins=8 here so apply matches fit's resolution.
 cs = apply_recalibration(y_neo, p_neo, d_neo, ppv_p, npv_p, p_pos, p_neg, n_bins=8, prev=_cal_prev)
 save_study('deepAntigen', y_neo, p_neo, cs, d_neo)
 

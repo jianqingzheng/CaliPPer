@@ -53,8 +53,9 @@ from calipper.combine_first_helpers import (
     compute_chain_weights, compute_combine_first_distances,
 )
 
-# Use tf env for GPU-enabled TensorFlow (XBCR-net training/inference)
-TF_PYTHON = '/home/jzheng/anaconda3/envs/tf/bin/python'
+# XBCR-net training/inference needs a TensorFlow 2.4.x env. Point TF_PYTHON at
+# that interpreter via the TF_PYTHON environment variable (defaults to `python`).
+TF_PYTHON = os.environ.get('TF_PYTHON', 'python')
 
 
 def _flush():
