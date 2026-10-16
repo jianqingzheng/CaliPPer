@@ -66,14 +66,16 @@ make install            # creates conda env + installs calipper editable
 
 ## 2. Reproducing Fig 6 — retrospective validation (~25 min, no training)
 
-Fig 6 is the **★ recommended starting point**. It exercises the full S2DD + Bayesian recalibration pipeline end-to-end on 5 published binding-prediction studies (XBCR-net, deepAntigen, AntibioticsAI, BigMHC, PanPep) and reproduces bit-exact from a fresh clone in **two commands**, no GPU required.
+Fig 6 is the **★ recommended starting point**. It exercises the full S2DD + Bayesian recalibration pipeline end-to-end on 5 published binding-prediction studies (XBCR-net, deepAntigen, AntibioticsAI, BigMHC, PanPep) and reproduces from a fresh clone in **two commands**, no GPU required.
 
 ```shell
 bash reproduce/prepare_fig6_data.sh    # fetch raw author data from DOIs + stage 11 cached predictions (~3 min)
 bash reproduce/reproduce_fig6.sh       # Stage 0 distance regen + Panel E verify (~22 min)
 ```
 
-**Why bit-exact-from-scratch is possible here:** Fig 6 uses authors' published pretrained weights (we don't train any model), so the only non-determinism is the S2DD + recalibration computation — purely deterministic linear algebra → max \|Δ\| = 9.99e-16 against committed reference.
+**Why exact reproduction is possible here:** Fig 6 uses authors' published pretrained weights (we don't train any model), so the only non-determinism is the S2DD + recalibration computation — purely deterministic linear algebra → max \|Δ\| = 9.99e-16 against committed reference.
+
+> **Released code vs. archived paper.** The released code lets the distance correction *subtract* where the density-ratio base estimate over-shoots: the fitted correction is no longer clipped to `[0,1]` before being added, so only the final estimate is bounded to `[0,1]`. The prediction then follows the true decline beyond the calibration distance range instead of holding high, slightly improving aggregate beyond-coverage and per-target performance prediction relative to the published figures. The exact figures and numbers from the paper are archived in the Code Ocean capsule; recalibration and degradation-correlation (|r|) outputs are identical either way.
 
 `prepare_fig6_data.sh` does two things:
 
@@ -94,7 +96,7 @@ bash reproduce/reproduce_fig6.sh       # Stage 0 distance regen + Panel E verify
 
 > Manual fallback prints the exact source URL + target path; place the file and re-run.
 
-**Expected Fig 6 Panel E values** (bit-exact target):
+**Expected Fig 6 Panel E values** (recalibration; exact reference):
 
 <div align="center">
 
@@ -126,12 +128,12 @@ Fig 2-5 evaluate the S2DD + recalibration framework across **10 primary models**
 
 ### 3.1. Tier 1: from cached predictions (~5 min, no training)
 
-Reproduces manuscript values bit-exact from cached author prediction CSVs **already committed to this repo** (~172 MB across 166 files). No external download required.
+Reproduces the manuscript figures from cached author prediction CSVs **already committed to this repo** (~172 MB across 166 files). No external download required.
 
 ```shell
 bash reproduce/reproduce_fig4.sh       # ~30s   → 12/12 panels (highest deposit coverage)
 bash reproduce/reproduce_fig5.sh       # ~230s  → 12/15 panels (3 BCR panels need Tier 2)
-bash reproduce/reproduce_fig2.sh       # ~4s    → 45/60 |r| cells bit-exact (5 ATM-TCR cells need Tier 2)
+bash reproduce/reproduce_fig2.sh       # ~4s    → 45/60 |r| cells match (5 ATM-TCR cells need Tier 2)
 bash reproduce/reproduce_fig3.sh       # ~18min → 5/10 panels (5 panels need Tier 2)
 ```
 

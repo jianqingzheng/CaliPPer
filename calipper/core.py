@@ -365,8 +365,13 @@ def predict_metric(cal_data: Dict[str, Tuple],
             fit_res = fit_best_curve(bin_d, bin_mp, residual,
                                       lam=VBIAS_BETA_LAM)
             if fit_res['params'] is not None:
+                # correction is a residual estimate (actual - PAPE); it is NOT
+                # clipped here, so it can subtract where PAPE over-estimates.
+                # The estimate is bounded to [0,1] only after the sum (below) --
+                # the single clamp a valid metric needs.
                 correction = float(predict_best_curve(
-                    fit_res, np.array([d_test]), np.array([mp_test]))[0])
+                    fit_res, np.array([d_test]), np.array([mp_test]),
+                    lo=-np.inf, hi=np.inf)[0])
             else:
                 correction = 0.0
         else:
@@ -609,9 +614,13 @@ def predict_subset_metric(cal_data: Dict[str, Tuple],
             c_sub = apply_calibration(cal_model, sub_p)
             pape_sub = pape_eq4(c_sub, sub_p, m, threshold=threshold)
             if fit_res['params'] is not None:
+                # residual estimate (actual - PAPE), NOT clipped here so it can
+                # subtract where PAPE over-estimates (consistent with
+                # predict_metric). The estimate is bounded to [0,1] only after
+                # the sum (below) -- the single clamp a valid metric needs.
                 correction = float(predict_best_curve(
                     fit_res, np.array([sub_d.mean()]),
-                    np.array([sub_p.mean()]))[0])
+                    np.array([sub_p.mean()]), lo=-np.inf, hi=np.inf)[0])
             else:
                 correction = 0.0
             results.append({
