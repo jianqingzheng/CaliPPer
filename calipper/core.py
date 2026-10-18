@@ -782,9 +782,10 @@ def apply_recalibration(test_y, test_p, test_d,
 
     n_bins: number of bins for computing the bin-level mean prediction (mp).
     If None, it is derived from the model's PREDICTED class counts on the query
-    (test_p thresholded at 0.5), never from query labels, then capped by query
-    size. The apply stage estimates no PPV/NPV, so it needs no true labels here;
-    this keeps recalibration label-free.
+    (test_p thresholded at the calibration-set prevalence anchor -- prev, else
+    cal_prev), never from query labels, then capped by query size. The apply stage
+    estimates no PPV/NPV, so it needs no true labels here; this keeps recalibration
+    label-free.
 
     test_y: NOT used by this function. Recalibration reads only the query
     predictions (test_p) and distances (test_d); test_y is retained as the first
@@ -804,13 +805,21 @@ def apply_recalibration(test_y, test_p, test_d,
     """
     if n_bins is None:
         # Label-free: derive the bin count from the model's PREDICTED class counts
-        # (query predictions), never from query labels. The apply stage estimates no
-        # PPV/NPV here, so it needs no true labels; this binning only sets the
-        # granularity of the mean-prediction covariate. For a working model the
-        # predicted counts match the label-derived counts (verified identical across
-        # the Fig 6 studies), so results are unchanged while test_y is never read.
-        n_pos = int((test_p >= 0.5).sum())
-        n_neg = int((test_p < 0.5).sum())
+        # (query predictions), split at the calibration-set prevalence anchor
+        # (prev, else cal_prev) -- never 0.5, never query labels. This keeps the
+        # predicted-class split consistent with the prevalence base rate used in
+        # recalibration; it only sets the granularity of the mean-prediction
+        # covariate (test_y is never read). The predicted counts then match the
+        # label-derived counts (verified identical across Fig 5, Fig 6 and the
+        # cross-test), so n_bins -- the only channel this binning can act through --
+        # is unchanged.
+        split_thr = prev if prev is not None else cal_prev
+        if split_thr is None:
+            raise ValueError(
+                "apply_recalibration: prev or cal_prev is required to split the "
+                "predicted class label-free")
+        n_pos = int((test_p >= split_thr).sum())
+        n_neg = int((test_p < split_thr).sum())
         n_bins = adaptive_n_bins(n_pos, n_neg)
         max_bins_for_test = max(4, len(test_p) // 4)
         n_bins = min(n_bins, max_bins_for_test)
