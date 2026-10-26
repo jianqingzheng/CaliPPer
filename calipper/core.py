@@ -8,8 +8,9 @@ NEW in v2.7 (vs v2.6):
 
     2. Adaptive bin_num in predict_metric() and fit_recalibration():
             n_bins = max(4, min(8, n_minority // 8))
-       where n_minority = min(n_pos_cal, n_neg_cal). min_per_bin=8 ensures ≥8
-       minority-class samples per bin (matches manuscript Methods main.tex
+       where n_minority = min(n_pos_cal, n_neg_cal). min_per_bin=8 sets the bin
+       count from the minority-class count (floored at 4, capped at 8) to
+       stabilise the per-bin PPV/NPV estimates (matches manuscript Methods main.tex
        L376/L453/L498/L511/L531 + supplementary.tex L406). apply_recalibration
        also uses adaptive n_bins.
 
@@ -214,8 +215,9 @@ def adaptive_n_bins(n_pos, n_neg, max_bins=8, min_bins=4, min_per_bin=8):
         n_minority = min(n_pos, n_neg)
         n_bins = max(min_bins, min(max_bins, n_minority // min_per_bin))
 
-    Rationale: ensures ≥`min_per_bin` minority-class samples per bin for
-    stable metric estimation and curve fitting. With min_per_bin=8 (matches
+    Rationale: sets the bin count from the minority-class count (floored at
+    `min_bins`, capped at `max_bins`) for stable metric estimation and curve
+    fitting. With min_per_bin=8 (matches
     manuscript Methods L376/L453/L498/L511/L531 + supplementary L406):
     AntibioticsAI cross-dataset (33 positives) → 4 bins → 8 pos/bin →
     no NaN bins, AP error drops from 0.094 to 0.010.
