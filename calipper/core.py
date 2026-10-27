@@ -650,7 +650,7 @@ def fit_recalibration(cal_data, n_bins=None, threshold=None, min_samples=30,
 
     Vanilla PPV/NPV (no DRE, no PAPE). Uses adaptive defaults:
       - threshold=None → auto-compute adaptive theta
-      - n_bins=None → adaptive max(4, min(8, n_minority // 4))
+      - n_bins=None → adaptive max(4, min(8, n_minority // 8))
 
     Args:
         cal_data: dict{name: (y, pred, distance)} — calibration test sets
