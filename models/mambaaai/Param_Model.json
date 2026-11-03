@@ -1,0 +1,10 @@
+{
+    "learning_rate": 0.0001,
+    "batchsize": 32,
+    "dropout": 0.4,
+    "decoder_hidden_dims": [512, 128, 32],
+    "latent_dim": 16,
+    "pooling_way": "avg",
+    "activation": "SiLU",
+    "mamba_layer": 2
+}

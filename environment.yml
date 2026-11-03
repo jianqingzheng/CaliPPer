@@ -1,0 +1,56 @@
+# Conda environment for CaliPPer reproducibility.
+#
+# Usage:
+#   conda env create -f environment.yml
+#   conda activate calipper
+#   pip install -e .
+#
+# The core scientific stack is PINNED to exact versions. These are the versions
+# under which the committed figure reference values (reproduce/data/reference/
+# figN_values.csv) were generated; verify.sh compares regenerated values against
+# them at 1e-10 tolerance, so bit-exact reproduction requires this exact stack.
+#
+# IMPORTANT — numpy MUST stay <2.0: numpy>=2 changed np.histogram / np.digitize
+# bin-edge computation, which shifts the calibration bins CaliPPer uses and
+# perturbs Fig 6 cal_ap / cal_aucroc by ~1e-2 (well outside the 1e-10 gate).
+# numpy>=2 also removed np.trapz, which the Fig 6 panel code relies on.
+
+name: calipper
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.10
+  - pip
+
+  # Core scientific stack — EXACT pins required for bit-exact figure reproduction
+  - numpy=1.26.4
+  - scipy=1.11.4
+  - pandas=2.1.4
+  - scikit-learn=1.3.2
+  - matplotlib=3.8.2
+  - seaborn>=0.12
+
+  # I/O
+  - openpyxl=3.1.5
+  - jupyter>=1.0
+  - ipykernel>=6.20
+
+  # Distance computation
+  - python-Levenshtein>=0.21
+
+  # Dev tools (optional but useful for contributors)
+  - pytest>=7.0
+  - pytest-cov>=4.0
+  - black>=23.0
+  - ruff>=0.1
+  - pre-commit>=3.0
+
+  - pip:
+    - nbstripout>=0.6
+    # Smith-Waterman BLOSUM62 alignment — REQUIRED by Fig 6 (BigMHC + deepAntigen
+    # s2dd distances via calipper.pluggable_distance). Pinned for reproducibility.
+    - parasail==1.3.4
+    # Morgan fingerprint Tanimoto distances - REQUIRED by Fig 6 (AntibioticsAI)
+    - rdkit>=2020.03.1

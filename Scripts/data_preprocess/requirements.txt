@@ -1,0 +1,8 @@
+polars>=1.0
+numpy
+pandas
+pyrepseq>=1.5
+python-igraph
+leidenalg
+scikit-learn
+tidytcells

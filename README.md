@@ -1,0 +1,176 @@
+<div align="center">
+<h1>
+CaliPPer (Calibration and Prediction of Performance): <br />
+<small>Quantifying, predicting and improving AI model performance for binding prediction</small>
+</h1>
+
+[![DOI](https://img.shields.io/badge/DOI-pending-darkyellow)](#)
+[![arXiv](https://img.shields.io/badge/arXiv-2606.07258-b31b1b.svg)](https://doi.org/10.48550/arXiv.2606.07258)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
+</div>
+
+Code for the paper **"Quantifying, predicting and improving AI model performance for binding prediction"**.
+
+> This repo provides an implementation of distance-aware Bayesian recalibration and performance prediction for BCR–antigen, TCR–epitope, MHC–peptide, and small-molecule binding-prediction models.
+
+---
+### Contents ###
+- [0. Brief Introduction](#0-brief-introduction)
+- [1. Installation](#1-installation)
+- [2. Reproducing Fig 6 — retrospective validation (~25 min, no training)](#2-reproducing-fig-6--retrospective-validation-25-min-no-training)
+- [3. Reproducing Figs 2-5: in-house data available on request](#3-reproducing-figs-2-5-in-house-data-available-on-request)
+  - [3.1. Tier 1: from cached predictions (~5 min, no training)](#31-tier-1-from-cached-predictions-5-min-no-training)
+  - [3.2. Tier 2: from-scratch retraining (~11–15 GPU-hours)](#32-tier-2-from-scratch-retraining-1115-gpu-hours)
+- [4. Quick API](#4-quick-api)
+- [5. Citing this work](#5-citing-this-work)
+
+---
+
+## 0. Brief Introduction
+
+CaliPPer combines a **Sample-to-Domain Distance (S2DD)** with **distance-aware Bayesian recalibration** to:
+
+1. Model-level: Quantify how a model's accuracy degrades as test data drifts from training (per-distance degradation curve).
+2. Data-level: Predict aggregate performance on unlabelled cohorts without test labels.
+3. Sample-level: Reweight per-sample confidence scores to improve top-k true discovery rates.
+
+The method is post-hoc (no retraining), modular across base distance metrics, spanning sequence-, structure-, embedding-, or even chemistry-based distances (Levenshtein, BLOSUM, ESM-2 embedding, TCRdist, RMSD, Morgan fingerprint), and validated across 10 primary models + 5 retrospective published studies (XBCR-net, deepAntigen, AntibioticsAI, BigMHC, PanPep).
+
+---
+
+## 1. Installation
+
+Clone code from GitHub:
+```shell
+git clone https://github.com/jianqingzheng/CaliPPer.git
+cd CaliPPer/
+```
+
+Install dependencies:
+
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://python.org/)
+[![NumPy](https://img.shields.io/badge/NumPy-1.24%2B-lightblue)](https://numpy.org)
+[![Pandas](https://img.shields.io/badge/Pandas-2.0%2B-lightblue)](https://pandas.pydata.org)
+[![SciPy](https://img.shields.io/badge/SciPy-1.10%2B-lightblue)](https://scipy.org)
+[![scikit-learn](https://img.shields.io/badge/sklearn-1.3%2B-lightblue)](https://scikit-learn.org)
+[![parasail](https://img.shields.io/badge/parasail-1.3%2B-lightblue)](https://github.com/jeffdaily/parasail-python)
+
+```shell
+make install            # creates conda env + installs calipper editable
+```
+
+> Tier 2 retraining additionally requires per-model conda envs (TensorFlow 2.4.1 for XBCR-net/NetTCR, PyTorch for ATM-TCR/ERGO-II/TCR-BERT/PanPep, sklearn for BLOSUM-RF, RDKit for AntibioticsAI). See `INSTALL.md`.
+
+---
+
+## 2. Reproducing Fig 6 — retrospective validation (~25 min, no training)
+
+Fig 6 is the **★ recommended starting point**. It exercises the full S2DD + Bayesian recalibration pipeline end-to-end on 5 published binding-prediction studies (XBCR-net, deepAntigen, AntibioticsAI, BigMHC, PanPep) and reproduces from a fresh clone in **two commands**, no GPU required.
+
+```shell
+bash reproduce/prepare_fig6_data.sh    # fetch raw author data from DOIs + stage 11 cached predictions (~3 min)
+bash reproduce/reproduce_fig6.sh       # Stage 0 distance regen + Panel E verify (~22 min)
+```
+
+**Why exact reproduction is possible here:** Fig 6 uses authors' published pretrained weights (we don't train any model), so the only non-determinism is the S2DD + recalibration computation — purely deterministic linear algebra → max \|Δ\| = 9.99e-16 against committed reference.
+
+> **Released code vs. archived paper.** The released code lets the distance correction *subtract* where the density-ratio base estimate over-shoots: the fitted correction is no longer clipped to `[0,1]` before being added, so only the final estimate is bounded to `[0,1]`. The prediction then follows the true decline beyond the calibration distance range instead of holding high, slightly improving aggregate beyond-coverage and per-target performance prediction relative to the published figures. The exact figures and numbers from the paper are archived in the Code Ocean capsule; recalibration and degradation-correlation (|r|) outputs are identical either way.
+
+`prepare_fig6_data.sh` does two things:
+
+1. **Stage 0**: copies 11 committed author prediction CSVs (5.8 MB total, at `reproduce/data/cached_predictions/`) into `INPUT_DIR/results/{study}_retrospective/...` (where Stage 1 of reproduce reads them).
+2. **Per-study fetch**: downloads raw sequence/structure data from each author's DOI.
+
+<div align="center">
+
+| Study | Source | Auto-download? |
+|---|---|---|
+| **AntibioticsAI** | Nature 2024 supplementary + Zenodo `working_example.zip` | ✓ fully automatic |
+| **PanPep** | Zenodo `PanPep-v1.0.0.zip` | ✓ fully automatic |
+| **deepAntigen** | GitHub `JiangBioLab/deepAntigen` raw CSVs + Lowery 2022 + ImmuneCODE | ✓ GitHub auto; Lowery + ImmuneCODE manual |
+| **XBCR-net** | GitHub `jianqingzheng/XBCR-net` + Mendeley supplementary | ✓ GitHub auto; Mendeley best-effort + manual fallback |
+| **BigMHC** | GitHub `KarchinLab/bigmhc` + Mendeley v4 ZIP | ✓ GitHub auto; Mendeley best-effort + manual fallback |
+
+</div>
+
+> Manual fallback prints the exact source URL + target path; place the file and re-run.
+
+**Expected Fig 6 Panel E values** (recalibration; exact reference):
+
+<div align="center">
+
+| Study | n | ΔAUROC | ΔAP |
+|---|---:|---:|---:|
+| XBCR-net (BCR–antigen) | 21 | +0.163 | +0.112 |
+| deepAntigen (TCR–epitope) | 100 | +0.131 | +0.160 |
+| AntibioticsAI (small-molecule) | 142 | +0.065 | +0.036 |
+| BigMHC (MHC–peptide) | 834 | +0.034 | +0.031 |
+| PanPep (TCR–epitope) | 882 | +0.016 | +0.025 |
+
+</div>
+
+Optional flags:
+
+```shell
+bash reproduce/prepare_fig6_data.sh --study panpep        # one study only
+bash reproduce/prepare_fig6_data.sh --include-inference   # also re-run author inference (PanPep + deepAntigen + AntibioticsAI auto; BigMHC + XBCR-net need --record 1 weights)
+bash reproduce/reproduce_fig6.sh --skip-regen             # use cached distances (faster re-runs)
+bash reproduce/reproduce_fig6.sh --no-verify              # regenerate, skip verify gate
+```
+
+
+---
+
+## 3. Reproducing Figs 2-5: in-house data available on request
+
+Figures 2-5 (the TCR and BCR cross-validation and cross-test evaluations) are built on an assembled immune-receptor dataset that includes an **in-house SARS-CoV-2 T-cell-receptor cohort** (ethics 19/SC/0296) that is not redistributed in this repository. These analyses are reproducible once that cohort data is obtained. The receptor sequences generated in the corresponding published studies are available via their accessions:
+
+- Spike-specific CD4 T-cell receptors: ArrayExpress **E-MTAB-14933** and the Supplementary Data of Liu, Antoun et al., *Nat. Commun.* **16**, 8743 (2025).
+- NP105-113-specific receptors: the Supplementary Tables of Peng et al., *Nat. Immunol.* **23**, 50-61 (2022).
+- ORF3a 207-215-specific receptors: PDB **9RXM / 9RU5 / 9RUP**, EMDB **EMD-54366 / EMD-54262 / EMD-54273**, and Supplementary Data 1 of Akil et al., *Nat. Commun.* **17**, 11026 (2026).
+- Membrane-protein (M) epitope receptors: available from the corresponding author on reasonable request (not in an open public accession).
+
+Complete reproduction of all analyses, including the in-house-dependent figures, is available to editors and reviewers through the (private) Code Ocean capsule: https://doi.org/10.24433/CO.4137150.v1
+
+---
+
+## 4. Quick API
+
+```python
+from calipper.core import (
+    compute_s2dd_distances,
+    predict_metric,
+    fit_recalibration,
+    apply_recalibration,
+)
+
+# 1. distance from each test sample to training distribution
+d = compute_s2dd_distances(test_df, train_df,
+                           chain_cols=["peptide", "CDR3a", "CDR3b"])
+
+# 2. predict performance on unlabelled cohort (AUROC, AP, F1, ...)
+result = predict_metric(cal_data, test_p, d, metrics=["aucroc", "ap"])
+
+# 3. Bayesian recalibration → per-sample confidence scores
+ppv, npv, p_pos, p_neg, prev = fit_recalibration(cal_data)
+cal_scores = apply_recalibration(test_y, test_p, d,
+                                  ppv, npv, p_pos, p_neg, prev=prev)
+```
+
+---
+
+## 5. Citing this work
+
+Any publication using this source code or the released model weights should cite:
+
+```bibtex
+@article{zheng2026calipper,
+  title={Quantifying, predicting and improving AI model performance for binding prediction},
+  author={Zheng, Jian-Qing and Lou, Hantao and Yin, Zinan and Farrar, Sam and Zhou, Yuze and Antoun, Elie and Wang, Xiangxi and Cao, Xuetao and Dong, Tao},
+  journal={},
+  year={2026},
+  doi={10.48550/arXiv.2606.07258}
+}
+```
+
